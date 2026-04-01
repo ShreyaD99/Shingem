@@ -16,8 +16,8 @@ function render() {
 
     div.innerHTML = `
       <strong>${g.title}</strong><br/>
-      ${g.description || ""}<br/>
-      <em>${g.vibe || ""}</em><br/>
+      ${g.description ? g.description : ""}<br/>
+      <em>${g.vibe ? g.vibe : ""}</em><br/>
       <button onclick="joinGathering(${index})">Request to Join</button>
     `;
 
