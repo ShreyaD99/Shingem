@@ -41,15 +41,15 @@ function render() {
 
 async function loadGatherings() {
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetch(API_URL + "?t=" + Date.now(), {
       method: "GET",
-      mode: "cors"
+      cache: "no-store"
     });
 
     const text = await res.text();
     const data = JSON.parse(text);
 
-    if (data.error) {
+    if (data && data.error) {
       alert("Backend error: " + data.error);
       return;
     }
@@ -59,8 +59,49 @@ async function loadGatherings() {
     render();
   } catch (error) {
     console.error(error);
-    alert("Couldn’t load shared gatherings. Try refreshing the page once.");
+    alert("Couldn’t load shared gatherings.");
   }
+}
+
+function createHiddenIframe(name) {
+  let iframe = document.getElementById(name);
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.name = name;
+    iframe.id = name;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+  }
+  return iframe;
+}
+
+function postViaForm(data) {
+  return new Promise((resolve) => {
+    const frameName = "kindred-submit-frame";
+    createHiddenIframe(frameName);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = API_URL;
+    form.target = frameName;
+    form.style.display = "none";
+
+    Object.entries(data).forEach(([key, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value ?? "";
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+
+    setTimeout(() => {
+      form.remove();
+      resolve();
+    }, 1200);
+  });
 }
 
 async function createGathering() {
@@ -74,28 +115,14 @@ async function createGathering() {
   }
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify({ title, description, vibe })
-    });
+    await postViaForm({ title, description, vibe });
 
-    const text = await res.text();
-    const result = JSON.parse(text);
+    document.getElementById("title").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("vibe").value = "";
 
-    if (result.success) {
-      document.getElementById("title").value = "";
-      document.getElementById("description").value = "";
-      document.getElementById("vibe").value = "";
-
-      alert("✨ Gathering created!");
-      await loadGatherings();
-    } else {
-      alert("Could not create gathering: " + (result.error || "Unknown error"));
-    }
+    alert("✨ Gathering created!");
+    setTimeout(loadGatherings, 1500);
   } catch (error) {
     console.error(error);
     alert("Could not create gathering.");
