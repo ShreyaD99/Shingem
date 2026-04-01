@@ -1,19 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kindred</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f9f7f4;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .container {
+      padding: 15px;
+      padding-bottom: 90px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+
+    .vibe {
+      font-size: 12px;
+      background: #eee;
+      padding: 5px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    button {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #111;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid #eee;
+      padding: 8px 0;
+    }
+
+    .tabs button {
+      background: none;
+      color: #111;
+      font-weight: 600;
+      width: auto;
+      margin-top: 0;
+      padding: 8px 16px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      margin-top: 40px;
+    }
+
+    small {
+      color: #666;
+      display: block;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="heading">Test Page</h1>
-  <button id="btn">Tap Me</button>
+  <header>
+    <h1>Kindred ✨</h1>
+    <p>building your chosen family</p>
+  </header>
+
+  <div class="container" id="app"></div>
+
+  <div class="tabs">
+    <button id="homeTab">Home</button>
+    <button id="createTab">Create</button>
+    <button id="profileTab">Profile</button>
+  </div>
 
   <script>
-    document.getElementById("btn").addEventListener("click", function () {
-      document.getElementById("heading").textContent = "It works!";
-      alert("JavaScript is running");
+    const STORAGE_KEY = "kindred_events_v3";
+    let events = [];
+
+    try {
+      events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      events = [];
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showTab(tab) {
+      if (tab === "home") renderHome();
+      if (tab === "create") renderCreate();
+      if (tab === "profile") renderProfile();
+    }
+
+    function renderHome() {
+      const app = document.getElementById("app");
+      let html = "<h3>Upcoming gatherings</h3>";
+
+      if (events.length === 0) {
+        html += "<div class='empty'>No gatherings yet — create one ✨</div>";
+      } else {
+        events.forEach((event, index) => {
+          const title = escapeHtml(event.title || "Untitled gathering");
+          const vibe = escapeHtml(event.vibe || "Meaningful");
+          const description = escapeHtml(event.description || "A warm space to connect.");
+
+          html += `
+            <div class="card">
+              <b>${title}</b>
+              <small>${description}</small>
+              <div class="vibe">${vibe}</div>
+              <button class="join-btn" data-index="${index}">Request to Join</button>
+            </div>
+          `;
+        });
+      }
+
+      app.innerHTML = html;
+
+      document.querySelectorAll(".join-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const index = Number(this.dataset.index);
+          const event = events[index];
+          const title = event ? event.title : "this gathering";
+          alert(`Request sent for "${title}" 💛`);
+        });
+      });
+    }
+
+    function renderCreate() {
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="card">
+          <h3>Create a gathering</h3>
+          <input id="title" placeholder="Friday Game Night" />
+          <input id="vibe" placeholder="Cozy, fun, meaningful..." />
+          <textarea id="desc" placeholder="What makes this gathering special?"></textarea>
+          <button id="createGatheringBtn">Create Gathering</button>
+        </div>
+      `;
+
+      document.getElementById("createGatheringBtn").addEventListener("click", createEvent);
+    }
+
+    function renderProfile() {
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="card">
+          <h3>Your space</h3>
+          <p>${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</p>
+          <p>Future: your circles, your people, your gatherings</p>
+          <button id="resetBtn">Reset App</button>
+        </div>
+      `;
+
+      document.getElementById("resetBtn").addEventListener("click", function () {
+        localStorage.removeItem(STORAGE_KEY);
+        events = [];
+        showTab("home");
+      });
+    }
+
+    function createEvent() {
+      const titleEl = document.getElementById("title");
+      const vibeEl = document.getElementById("vibe");
+      const descEl = document.getElementById("desc");
+
+      const title = titleEl.value.trim();
+      const vibe = vibeEl.value.trim();
+      const description = descEl.value.trim();
+
+      if (!title) {
+        alert("Please add a gathering name ✨");
+        return;
+      }
+
+      const newEvent = {
+        title: title,
+        vibe: vibe || "Meaningful",
+        description: description || "A warm space to connect."
+      };
+
+      events.unshift(newEvent);
+      save();
+      alert("Gathering created ✨");
+      showTab("home");
+    }
+
+    document.getElementById("homeTab").addEventListener("click", function () {
+      showTab("home");
     });
+
+    document.getElementById("createTab").addEventListener("click", function () {
+      showTab("create");
+    });
+
+    document.getElementById("profileTab").addEventListener("click", function () {
+      showTab("profile");
+    });
+
+    showTab("home");
   </script>
 </body>
 </html>
