@@ -1,36 +1,61 @@
-let gatherings = JSON.parse(localStorage.getItem("gatherings")) || [];
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
 
-function saveData() {
-  localStorage.setItem("gatherings", JSON.stringify(gatherings));
+let gatherings = [];
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.innerText = text || "";
+  return div.innerHTML;
 }
 
 function render() {
   const container = document.getElementById("gatherings");
+  const count = document.getElementById("count");
+
   if (!container) return;
 
   container.innerHTML = "";
 
-  gatherings.forEach((g, index) => {
+  if (gatherings.length === 0) {
+    container.innerHTML = `<p>No gatherings yet. Create the first one ✨</p>`;
+  }
+
+  gatherings.forEach((g) => {
     const div = document.createElement("div");
     div.className = "gathering";
 
     div.innerHTML = `
-      <strong>${g.title}</strong><br/>
-      ${g.description ? g.description : ""}<br/>
-      <em>${g.vibe ? g.vibe : ""}</em><br/>
-      <button onclick="joinGathering(${index})">Request to Join</button>
+      <strong>${escapeHtml(g.title)}</strong><br/>
+      ${escapeHtml(g.description)}<br/>
+      <em>${escapeHtml(g.vibe)}</em><br/>
+      <button onclick="joinGathering('${g.id || ""}', '${escapeHtml(g.title)}')">Request to Join</button>
     `;
 
     container.appendChild(div);
   });
 
-  const count = document.getElementById("count");
   if (count) {
     count.innerText = `${gatherings.length} gatherings created`;
   }
 }
 
-function createGathering() {
+async function loadGatherings() {
+  try {
+    const res = await fetch(API_URL);
+    gatherings = await res.json();
+
+    gatherings.sort((a, b) => {
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+
+    render();
+  } catch (error) {
+    console.error(error);
+    alert("Could not load shared gatherings.");
+  }
+}
+
+async function createGathering() {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
   const vibe = document.getElementById("vibe").value.trim();
@@ -40,25 +65,39 @@ function createGathering() {
     return;
   }
 
-  gatherings.push({ title, description, vibe });
-  saveData();
-  render();
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({ title, description, vibe })
+    });
 
-  alert("✨ Gathering created!");
+    const result = await res.json();
 
-  document.getElementById("title").value = "";
-  document.getElementById("description").value = "";
-  document.getElementById("vibe").value = "";
+    if (result.success) {
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("vibe").value = "";
+
+      alert("✨ Gathering created!");
+      await loadGatherings();
+    } else {
+      alert("Could not create gathering.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Could not create gathering.");
+  }
 }
 
-function joinGathering(index) {
-  alert(`Request sent to join "${gatherings[index].title}" ✨`);
+function joinGathering(id, title) {
+  alert(`Request sent to join "${title}" ✨`);
 }
 
 function resetApp() {
-  localStorage.removeItem("gatherings");
-  gatherings = [];
-  render();
+  alert("For now, reset should be done directly in the Google Sheet.");
 }
 
-render();
+loadGatherings();
