@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycby0YB7YD6USnhorVx-TBL-sQsF9GIwyjJUuAqIbF1L38BFIVHUpJod8UySPXUZ1fySHTA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwboJ7yLK6XZdjI3bQH7xeV-jL2JSxk1QnAnJ6AXKtb_LrI47lhDDjMY5T3tXuDURsxoQ/exec";
 let gatherings = [];
 
 function escapeHtml(text) {
