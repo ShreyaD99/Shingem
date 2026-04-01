@@ -64,7 +64,17 @@ function loadGatherings() {
     delete window[callbackName];
     alert("Couldn’t load shared gatherings.");
   };
+
   document.body.appendChild(script);
+}
+
+function saveViaImage(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(true);
+    img.src = url;
+  });
 }
 
 async function createGathering() {
@@ -77,7 +87,7 @@ async function createGathering() {
     return;
   }
 
-  const url =
+  const writeUrl =
     API_URL +
     "?title=" + encodeURIComponent(title) +
     "&description=" + encodeURIComponent(description) +
@@ -85,23 +95,17 @@ async function createGathering() {
     "&t=" + Date.now();
 
   try {
-    const res = await fetch(url, { method: "GET" });
-    const text = await res.text();
-
-    if (!res.ok) {
-      alert("Could not create gathering.");
-      return;
-    }
+    await saveViaImage(writeUrl);
 
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("vibe").value = "";
 
     alert("✨ Gathering created!");
-    setTimeout(loadGatherings, 700);
+    setTimeout(loadGatherings, 1200);
   } catch (error) {
     console.error(error);
-    alert("Could not create gathering.");
+    alert("Couldn’t save.");
   }
 }
 
