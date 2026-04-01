@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwboJ7yLK6XZdjI3bQH7xeV-jL2JSxk1QnAnJ6AXKtb_LrI47lhDDjMY5T3tXuDURsxoQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby7Kvssv5Emly1ofI64YoQcr9ASq2l2pXQY2z9q8EC5ugoRFy0OJyLmUu8KaRPBGjEF0A/exec";
 
 let gatherings = [];
 
