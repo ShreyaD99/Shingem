@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gather</title>
+  <title>Kindred</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -11,20 +11,24 @@
 
   <div class="container">
 
-    <h1>✨ Gather</h1>
+    <!-- Header -->
+    <div class="header">
+      <h1>Kindred</h1>
+      <p class="tagline">A safe space for your chosen family.</p>
+    </div>
 
-    <!-- Create Gathering -->
+    <!-- Create -->
     <div class="card">
       <h2>Create Gathering</h2>
-      <input id="title" placeholder="Title" />
-      <input id="description" placeholder="Description" />
-      <input id="vibe" placeholder="Vibe (Cozy, Fun…)" />
-      <button onclick="createGathering()">Create</button>
+      <input id="title" placeholder="Friday Game Night ✨" />
+      <input id="description" placeholder="Games, wine & cozy vibes" />
+      <input id="vibe" placeholder="Cozy / Fun / Chill" />
+      <button onclick="createGathering()">Create Gathering</button>
     </div>
 
     <!-- Home -->
     <div class="card">
-      <h2>Gatherings</h2>
+      <h2>Your Gatherings</h2>
       <div id="gatherings"></div>
     </div>
 
@@ -32,7 +36,7 @@
     <div class="card">
       <h2>Profile</h2>
       <p id="count">0 gatherings created</p>
-      <button onclick="resetApp()">Reset</button>
+      <button class="secondary" onclick="resetApp()">Reset</button>
     </div>
 
   </div>
