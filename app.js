@@ -36,45 +36,24 @@ function render() {
   }
 }
 
-function loadGatherings() {
-  const callbackName = "kindredCallback_" + Date.now();
+async function loadGatherings() {
+  try {
+    const res = await fetch(API_URL + "?t=" + Date.now());
+    const text = await res.text();
+    const data = JSON.parse(text);
 
-  window[callbackName] = function(data) {
-    try {
-      if (data && data.error) {
-        alert("Backend error: " + data.error);
-        return;
-      }
-
-      gatherings = Array.isArray(data) ? data : [];
-      gatherings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-      render();
-    } finally {
-      delete window[callbackName];
+    if (data && data.error) {
+      alert("Backend error: " + data.error);
+      return;
     }
-  };
 
-  const oldScripts = document.querySelectorAll('script[data-kindred="jsonp"]');
-  oldScripts.forEach((s) => s.remove());
-
-  const script = document.createElement("script");
-  script.src = API_URL + "?callback=" + callbackName + "&t=" + Date.now();
-  script.dataset.kindred = "jsonp";
-  script.onerror = function() {
-    delete window[callbackName];
+    gatherings = Array.isArray(data) ? data : [];
+    gatherings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    render();
+  } catch (error) {
+    console.error(error);
     alert("Couldn’t load shared gatherings.");
-  };
-
-  document.body.appendChild(script);
-}
-
-function saveViaImage(url) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(true);
-    img.src = url;
-  });
+  }
 }
 
 async function createGathering() {
@@ -87,7 +66,7 @@ async function createGathering() {
     return;
   }
 
-  const writeUrl =
+  const url =
     API_URL +
     "?title=" + encodeURIComponent(title) +
     "&description=" + encodeURIComponent(description) +
@@ -95,14 +74,14 @@ async function createGathering() {
     "&t=" + Date.now();
 
   try {
-    await saveViaImage(writeUrl);
+    await fetch(url);
 
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("vibe").value = "";
 
     alert("✨ Gathering created!");
-    setTimeout(loadGatherings, 1200);
+    setTimeout(loadGatherings, 800);
   } catch (error) {
     console.error(error);
     alert("Couldn’t save.");
