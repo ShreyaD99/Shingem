@@ -32,15 +32,17 @@
 
     .container {
       padding: 15px;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
+      max-width: 760px;
+      margin: 0 auto;
     }
 
     .card {
       background: white;
       padding: 16px;
-      border-radius: 14px;
+      border-radius: 16px;
       margin-bottom: 14px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
     }
 
     .vibe {
@@ -50,33 +52,55 @@
       border-radius: 20px;
       display: inline-block;
       margin-top: 8px;
+      margin-right: 6px;
     }
 
     .section-title {
-      margin-top: 16px;
+      margin-top: 18px;
       margin-bottom: 8px;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .prompt-box {
       background: #faf8f5;
       border: 1px solid #eee;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 12px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
-    .answer-item, .comment-item {
+    .answer-item, .comment-item, .top-pick-item {
       background: #f5f5f5;
-      padding: 8px 10px;
-      border-radius: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
       margin-top: 8px;
       font-size: 14px;
     }
 
+    .top-pick-item {
+      background: #f3ede5;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .like-btn, .tiny-btn {
+      width: auto;
+      padding: 7px 10px;
+      margin-top: 0;
+      font-size: 12px;
+      background: #ece7df;
+      color: #222;
+    }
+
     button {
-      padding: 10px;
+      padding: 11px 12px;
       border-radius: 10px;
       border: none;
       background: #111;
@@ -92,14 +116,12 @@
       color: #222;
     }
 
-    .small-btn {
-      width: auto;
-      padding: 8px 12px;
-      margin-top: 8px;
-      font-size: 13px;
+    .danger-btn {
+      background: #a33333;
+      color: white;
     }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
@@ -109,10 +131,11 @@
       font-size: 14px;
       box-sizing: border-box;
       font-family: inherit;
+      background: white;
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 82px;
       resize: vertical;
     }
 
@@ -143,11 +166,37 @@
       margin-top: 40px;
     }
 
-    small {
+    .small-text {
       color: #666;
-      display: block;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #f1ebe3;
+      color: #333;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-right: 6px;
       margin-top: 6px;
-      line-height: 1.4;
+    }
+
+    .host-note {
+      background: #f7f1ea;
+      border-left: 4px solid #d1b79c;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -166,7 +215,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "kindred_events_v5";
+    const STORAGE_KEY = "kindred_events_v6";
     let events = [];
 
     try {
@@ -203,6 +252,54 @@
       ];
     }
 
+    function buildAnswer(name, text, mood) {
+      return {
+        name: name || "Guest",
+        text: text,
+        mood: mood || "Chill",
+        likes: 0
+      };
+    }
+
+    function buildComment(name, text, mood) {
+      return {
+        name: name || "Guest",
+        text: text,
+        mood: mood || "Chill",
+        likes: 0
+      };
+    }
+
+    function getTopPicks(event) {
+      const picks = [];
+
+      (event.prompts || []).forEach(prompt => {
+        (prompt.answers || []).forEach(answer => {
+          picks.push({
+            type: prompt.question,
+            name: answer.name,
+            text: answer.text,
+            likes: answer.likes || 0,
+            mood: answer.mood || ""
+          });
+        });
+      });
+
+      (event.guestComments || []).forEach(comment => {
+        picks.push({
+          type: "Guest comment",
+          name: comment.name,
+          text: comment.text,
+          likes: comment.likes || 0,
+          mood: comment.mood || ""
+        });
+      });
+
+      return picks
+        .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+        .slice(0, 3);
+    }
+
     function renderHome() {
       const app = document.getElementById("app");
       let html = "<h3>Upcoming gatherings</h3>";
@@ -214,12 +311,32 @@
           const title = escapeHtml(event.title || "Untitled gathering");
           const vibe = escapeHtml(event.vibe || "Meaningful");
           const description = escapeHtml(event.description || "A warm space to connect.");
+          const hostNote = escapeHtml(event.hostNote || "");
+          const topPicks = getTopPicks(event);
 
           html += `
             <div class="card">
-              <b>${title}</b>
-              <small>${description}</small>
+              <b style="font-size:18px;">${title}</b>
+              <div class="small-text" style="margin-top:6px;">${description}</div>
               <div class="vibe">${vibe}</div>
+              ${event.eventMood ? `<div class="vibe">${escapeHtml(event.eventMood)}</div>` : ""}
+
+              ${hostNote ? `
+                <div class="section-title">From the host</div>
+                <div class="host-note">${hostNote}</div>
+              ` : ""}
+
+              <div class="section-title">Top picks</div>
+              ${
+                topPicks.length === 0
+                  ? `<div class="small-text">No suggestions yet — be the first ✨</div>`
+                  : topPicks.map(item => `
+                    <div class="top-pick-item">
+                      <strong>${escapeHtml(item.text)}</strong><br/>
+                      <span class="small-text">${escapeHtml(item.name)} • ${escapeHtml(item.type)}${item.mood ? ` • ${escapeHtml(item.mood)}` : ""} • ❤️ ${item.likes}</span>
+                    </div>
+                  `).join("")
+              }
 
               <div class="section-title">Prompts for the evening</div>
           `;
@@ -229,20 +346,26 @@
               <div class="prompt-box">
                 <div><strong>${escapeHtml(prompt.question)}</strong></div>
 
-                ${(prompt.answers || []).map(answer => `
-                  <div class="answer-item">${escapeHtml(answer)}</div>
+                ${(prompt.answers || []).map((answer, answerIndex) => `
+                  <div class="answer-item">
+                    <strong>${escapeHtml(answer.name)}</strong>: ${escapeHtml(answer.text)}
+                    <div class="row">
+                      ${answer.mood ? `<span class="pill">${escapeHtml(answer.mood)}</span>` : ""}
+                      <button class="like-btn" onclick="likeAnswer(${eventIndex}, ${promptIndex}, ${answerIndex})">❤️ ${answer.likes || 0}</button>
+                    </div>
+                  </div>
                 `).join("")}
 
-                <input
-                  id="answer-${eventIndex}-${promptIndex}"
-                  placeholder="Add your idea..."
-                />
-                <button
-                  class="secondary-btn small-btn"
-                  onclick="addAnswer(${eventIndex}, ${promptIndex})"
-                >
-                  Add Answer
-                </button>
+                <input id="answer-name-${eventIndex}-${promptIndex}" placeholder="Your name" />
+                <select id="answer-mood-${eventIndex}-${promptIndex}">
+                  <option>Chill</option>
+                  <option>Fun</option>
+                  <option>Deep talk</option>
+                  <option>Cozy</option>
+                  <option>Party</option>
+                </select>
+                <input id="answer-${eventIndex}-${promptIndex}" placeholder="Add your idea..." />
+                <button class="secondary-btn" onclick="addAnswer(${eventIndex}, ${promptIndex})">Add Answer</button>
               </div>
             `;
           });
@@ -250,22 +373,29 @@
           html += `
               <div class="section-title">Add your own question or comment</div>
 
-              ${(event.guestComments || []).map(comment => `
-                <div class="comment-item">${escapeHtml(comment)}</div>
+              ${(event.guestComments || []).map((comment, commentIndex) => `
+                <div class="comment-item">
+                  <strong>${escapeHtml(comment.name)}</strong>: ${escapeHtml(comment.text)}
+                  <div class="row">
+                    ${comment.mood ? `<span class="pill">${escapeHtml(comment.mood)}</span>` : ""}
+                    <button class="like-btn" onclick="likeComment(${eventIndex}, ${commentIndex})">❤️ ${comment.likes || 0}</button>
+                  </div>
+                </div>
               `).join("")}
 
-              <textarea
-                id="comment-${eventIndex}"
-                placeholder="Share a thought, suggestion, or question..."
-              ></textarea>
-              <button
-                class="secondary-btn"
-                onclick="addComment(${eventIndex})"
-              >
-                Add Comment
-              </button>
+              <input id="comment-name-${eventIndex}" placeholder="Your name" />
+              <select id="comment-mood-${eventIndex}">
+                <option>Chill</option>
+                <option>Fun</option>
+                <option>Deep talk</option>
+                <option>Cozy</option>
+                <option>Party</option>
+              </select>
+              <textarea id="comment-${eventIndex}" placeholder="Share a thought, suggestion, or question..."></textarea>
+              <button class="secondary-btn" onclick="addComment(${eventIndex})">Add Comment</button>
 
               <button onclick="join(${eventIndex})">Request to Join</button>
+              <button class="secondary-btn" onclick="copySummary(${eventIndex})">Copy Event Summary</button>
             </div>
           `;
         });
@@ -282,14 +412,24 @@
 
           <input id="title" placeholder="Ladies Evening ✨" />
           <input id="vibe" placeholder="Cozy, meaningful, fun..." />
+
+          <select id="eventMood">
+            <option>Chill</option>
+            <option>Fun</option>
+            <option>Deep talk</option>
+            <option>Cozy</option>
+            <option>Party</option>
+          </select>
+
           <textarea id="desc" placeholder="What makes this gathering special?"></textarea>
+          <textarea id="hostNote" placeholder="Host note: what kind of evening are you imagining?"></textarea>
 
           <div class="section-title">Default prompts</div>
-          <small>These will be added automatically:</small>
-          <small>• What movie should we watch?</small>
-          <small>• What game should we play?</small>
-          <small>• What music should we have in the background?</small>
-          <small>• What would you love us to talk about?</small>
+          <div class="small-text">These will be added automatically:</div>
+          <div class="small-text">• What movie should we watch?</div>
+          <div class="small-text">• What game should we play?</div>
+          <div class="small-text">• What music should we have in the background?</div>
+          <div class="small-text">• What would you love us to talk about?</div>
 
           <button id="createGatheringBtn">Create Gathering</button>
         </div>
@@ -304,8 +444,23 @@
         <div class="card">
           <h3>Your space</h3>
           <p>${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</p>
-          <p>Delete all gatherings is available here only.</p>
-          <button id="resetBtn">Delete All Gatherings</button>
+          <p class="small-text">Admin tools live here only on your device for now.</p>
+          <button id="resetBtn" class="danger-btn">Delete All Gatherings</button>
+        </div>
+
+        <div class="card">
+          <h3>Manage gatherings</h3>
+          ${
+            events.length === 0
+              ? `<div class="small-text">No gatherings to manage yet.</div>`
+              : events.map((event, index) => `
+                  <div class="prompt-box">
+                    <strong>${escapeHtml(event.title)}</strong>
+                    <div class="small-text">${escapeHtml(event.description || "")}</div>
+                    <button class="danger-btn" onclick="deleteEvent(${index})">Delete This Gathering</button>
+                  </div>
+                `).join("")
+          }
         </div>
       `;
 
@@ -319,13 +474,11 @@
     }
 
     function createEvent() {
-      const titleEl = document.getElementById("title");
-      const vibeEl = document.getElementById("vibe");
-      const descEl = document.getElementById("desc");
-
-      const title = titleEl.value.trim();
-      const vibe = vibeEl.value.trim();
-      const description = descEl.value.trim();
+      const title = document.getElementById("title").value.trim();
+      const vibe = document.getElementById("vibe").value.trim();
+      const description = document.getElementById("desc").value.trim();
+      const hostNote = document.getElementById("hostNote").value.trim();
+      const eventMood = document.getElementById("eventMood").value;
 
       if (!title) {
         alert("Please add a gathering name ✨");
@@ -335,9 +488,12 @@
       const newEvent = {
         title: title,
         vibe: vibe || "Meaningful",
+        eventMood: eventMood || "Chill",
         description: description || "A warm space to connect.",
+        hostNote: hostNote || "",
         prompts: defaultPrompts(),
-        guestComments: []
+        guestComments: [],
+        joinRequests: []
       };
 
       events.unshift(newEvent);
@@ -347,25 +503,49 @@
     }
 
     function addAnswer(eventIndex, promptIndex) {
-      const input = document.getElementById(`answer-${eventIndex}-${promptIndex}`);
-      if (!input) return;
+      const nameInput = document.getElementById(`answer-name-${eventIndex}-${promptIndex}`);
+      const moodInput = document.getElementById(`answer-mood-${eventIndex}-${promptIndex}`);
+      const textInput = document.getElementById(`answer-${eventIndex}-${promptIndex}`);
 
-      const value = input.value.trim();
-      if (!value) return;
+      if (!textInput) return;
 
-      events[eventIndex].prompts[promptIndex].answers.push(value);
+      const name = nameInput.value.trim() || "Guest";
+      const mood = moodInput.value;
+      const text = textInput.value.trim();
+
+      if (!text) return;
+
+      events[eventIndex].prompts[promptIndex].answers.push(buildAnswer(name, text, mood));
       save();
       renderHome();
     }
 
     function addComment(eventIndex) {
-      const input = document.getElementById(`comment-${eventIndex}`);
-      if (!input) return;
+      const nameInput = document.getElementById(`comment-name-${eventIndex}`);
+      const moodInput = document.getElementById(`comment-mood-${eventIndex}`);
+      const textInput = document.getElementById(`comment-${eventIndex}`);
 
-      const value = input.value.trim();
-      if (!value) return;
+      if (!textInput) return;
 
-      events[eventIndex].guestComments.push(value);
+      const name = nameInput.value.trim() || "Guest";
+      const mood = moodInput.value;
+      const text = textInput.value.trim();
+
+      if (!text) return;
+
+      events[eventIndex].guestComments.push(buildComment(name, text, mood));
+      save();
+      renderHome();
+    }
+
+    function likeAnswer(eventIndex, promptIndex, answerIndex) {
+      events[eventIndex].prompts[promptIndex].answers[answerIndex].likes += 1;
+      save();
+      renderHome();
+    }
+
+    function likeComment(eventIndex, commentIndex) {
+      events[eventIndex].guestComments[commentIndex].likes += 1;
       save();
       renderHome();
     }
@@ -374,6 +554,54 @@
       const event = events[index];
       const title = event ? event.title : "this gathering";
       alert(`Request sent for "${title}" 💛`);
+    }
+
+    function deleteEvent(index) {
+      const confirmed = confirm("Delete this gathering?");
+      if (!confirmed) return;
+      events.splice(index, 1);
+      save();
+      showTab("profile");
+    }
+
+    function copySummary(eventIndex) {
+      const event = events[eventIndex];
+      if (!event) return;
+
+      const topPicks = getTopPicks(event);
+
+      let summary = `${event.title}\n`;
+      summary += `${event.description || ""}\n`;
+      summary += `Vibe: ${event.vibe || "Meaningful"}\n`;
+      summary += `Mood: ${event.eventMood || "Chill"}\n\n`;
+
+      if (event.hostNote) {
+        summary += `Host note:\n${event.hostNote}\n\n`;
+      }
+
+      summary += `Top picks:\n`;
+      if (topPicks.length === 0) {
+        summary += `- No suggestions yet\n`;
+      } else {
+        topPicks.forEach(item => {
+          summary += `- ${item.text} (${item.name}, ${item.type}, ❤️ ${item.likes})\n`;
+        });
+      }
+
+      summary += `\nGuest comments:\n`;
+      if (!event.guestComments || event.guestComments.length === 0) {
+        summary += `- None yet\n`;
+      } else {
+        event.guestComments.forEach(comment => {
+          summary += `- ${comment.name}: ${comment.text} (❤️ ${comment.likes})\n`;
+        });
+      }
+
+      navigator.clipboard.writeText(summary)
+        .then(() => alert("Summary copied ✨"))
+        .catch(() => {
+          alert("Copy didn’t work automatically. You can manually copy from your browser if needed.");
+        });
     }
 
     document.getElementById("homeTab").addEventListener("click", function () {
