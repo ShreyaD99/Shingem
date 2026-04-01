@@ -2,388 +2,393 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kindred — A safe space for your chosen family.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kindred</title>
   <style>
-    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f7f4ef;
-      color: #1f1f1f;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f9f7f4;
+      color: #222;
     }
-    .app {
-      max-width: 480px;
-      margin: 0 auto;
-      min-height: 100vh;
-      background: #fffaf5;
+
+    header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .container {
+      padding: 15px;
       padding-bottom: 90px;
     }
-    .header {
-      padding: 24px 20px 10px;
-      background: #fffaf5;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid #f0e7dc;
-    }
-    .brand {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0;
-    }
-    .tagline {
-      margin: 6px 0 0;
-      font-size: 14px;
-      color: #6f665c;
-    }
-    .screen {
-      display: none;
-      padding: 20px;
-    }
-    .screen.active {
-      display: block;
-    }
-    .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 16px;
-    }
+
     .card {
       background: white;
-      border: 1px solid #eee3d5;
-      border-radius: 18px;
       padding: 16px;
+      border-radius: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     }
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 18px;
-    }
-    .card p {
-      margin: 0 0 8px;
-      color: #5f584f;
-      line-height: 1.4;
-    }
-    .badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f5ecdf;
-      color: #7a5d34;
+
+    .vibe {
       font-size: 12px;
-      margin-bottom: 12px;
+      background: #eee;
+      padding: 5px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 8px;
     }
-    .button {
-      border: none;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-    }
-    .button-primary {
-      background: #1f1f1f;
-      color: white;
-    }
-    .button-secondary {
-      background: #efe5d8;
-      color: #3a2f24;
-    }
-    .button-danger {
-      background: #f6d9d9;
-      color: #7d1f1f;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
+
+    .section-title {
+      margin-top: 16px;
       margin-bottom: 8px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
     }
-    input, textarea, select {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #ddd2c4;
-      border-radius: 14px;
-      font-size: 15px;
-      background: white;
+
+    .prompt-box {
+      background: #faf8f5;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
     }
+
+    .answer-item, .comment-item {
+      background: #f5f5f5;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #111;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      background: #ece7df;
+      color: #222;
+    }
+
+    .small-btn {
+      width: auto;
+      padding: 8px 12px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
     textarea {
-      min-height: 100px;
+      min-height: 80px;
       resize: vertical;
     }
-    .nav {
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: white;
       position: fixed;
       bottom: 0;
       left: 0;
-      right: 0;
-      max-width: 480px;
-      margin: 0 auto;
-      background: #fffaf5;
-      border-top: 1px solid #eee3d5;
-      display: flex;
-      padding: 10px;
-      gap: 10px;
+      width: 100%;
+      border-top: 1px solid #eee;
+      padding: 8px 0;
     }
-    .nav button {
-      flex: 1;
-      border: none;
-      background: #f3eadf;
-      border-radius: 14px;
-      padding: 12px 10px;
+
+    .tabs button {
+      background: none;
+      color: #111;
       font-weight: 600;
-      cursor: pointer;
-      color: #4e4134;
+      width: auto;
+      margin-top: 0;
+      padding: 8px 16px;
     }
-    .nav button.active {
-      background: #1f1f1f;
-      color: white;
-    }
-    .empty-state {
+
+    .empty {
       text-align: center;
-      color: #7b736a;
-      padding: 30px 10px;
+      color: #777;
+      margin-top: 40px;
     }
-    .small-text {
-      font-size: 14px;
-      color: #6f665c;
-      line-height: 1.5;
-    }
-    .profile-stat {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 6px 0 4px;
-    }
-    .success-message,
-    .error-message {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 14px;
-    }
-    .success-message {
-      background: #eaf7ee;
-      color: #1d6b39;
-    }
-    .error-message {
-      background: #fdecec;
-      color: #8a1f1f;
+
+    small {
+      color: #666;
+      display: block;
+      margin-top: 6px;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="header">
-      <h1 class="brand">Kindred</h1>
-      <p class="tagline">A safe space for your chosen family.</p>
-    </div>
+  <header>
+    <h1>Kindred ✨</h1>
+    <p>building your chosen family</p>
+  </header>
 
-    <div id="homeScreen" class="screen active">
-      <h2 class="section-title">Gatherings</h2>
-      <div id="gatheringsList">
-        <div class="empty-state">Loading gatherings...</div>
-      </div>
-    </div>
+  <div class="container" id="app"></div>
 
-    <div id="createScreen" class="screen">
-      <h2 class="section-title">Create Gathering</h2>
-
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input id="title" type="text" placeholder="Friday Game Night" />
-      </div>
-
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" placeholder="Games and unwinding with friends"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="vibe">Vibe</label>
-        <select id="vibe">
-          <option value="Cozy">Cozy</option>
-          <option value="Warm">Warm</option>
-          <option value="Playful">Playful</option>
-          <option value="Intentional">Intentional</option>
-          <option value="Chill">Chill</option>
-        </select>
-      </div>
-
-      <button id="createBtn" class="button button-primary">Create Gathering</button>
-      <div id="formMessage"></div>
-    </div>
-
-    <div id="profileScreen" class="screen">
-      <h2 class="section-title">Profile</h2>
-
-      <div class="card">
-        <div class="small-text">Gatherings created</div>
-        <div id="gatheringCount" class="profile-stat">0</div>
-      </div>
-
-      <div class="card">
-        <button id="resetBtn" class="button button-danger">Reset All Gatherings</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="nav">
-    <button id="homeTab" class="active">Home</button>
+  <div class="tabs">
+    <button id="homeTab">Home</button>
     <button id="createTab">Create</button>
     <button id="profileTab">Profile</button>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  <script>
+    const STORAGE_KEY = "kindred_events_v5";
+    let events = [];
 
-    const supabaseUrl = 'https://ydxcorkwshehscivneli.supabase.co'
-    const supabaseKey = 'sb_publishable_FMYyj0UODgDKAKPNrsVikQ_oCZ5_wnz'
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    const homeScreen = document.getElementById('homeScreen')
-    const createScreen = document.getElementById('createScreen')
-    const profileScreen = document.getElementById('profileScreen')
-
-    const homeTab = document.getElementById('homeTab')
-    const createTab = document.getElementById('createTab')
-    const profileTab = document.getElementById('profileTab')
-
-    const gatheringsList = document.getElementById('gatheringsList')
-    const gatheringCount = document.getElementById('gatheringCount')
-    const formMessage = document.getElementById('formMessage')
-
-    const titleInput = document.getElementById('title')
-    const descriptionInput = document.getElementById('description')
-    const vibeInput = document.getElementById('vibe')
-
-    const createBtn = document.getElementById('createBtn')
-    const resetBtn = document.getElementById('resetBtn')
-
-    function showScreen(screenName) {
-      homeScreen.classList.remove('active')
-      createScreen.classList.remove('active')
-      profileScreen.classList.remove('active')
-
-      homeTab.classList.remove('active')
-      createTab.classList.remove('active')
-      profileTab.classList.remove('active')
-
-      if (screenName === 'home') {
-        homeScreen.classList.add('active')
-        homeTab.classList.add('active')
-      } else if (screenName === 'create') {
-        createScreen.classList.add('active')
-        createTab.classList.add('active')
-      } else if (screenName === 'profile') {
-        profileScreen.classList.add('active')
-        profileTab.classList.add('active')
-      }
+    try {
+      events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      events = [];
     }
 
-    homeTab.addEventListener('click', () => showScreen('home'))
-    createTab.addEventListener('click', () => showScreen('create'))
-    profileTab.addEventListener('click', () => showScreen('profile'))
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    }
 
     function escapeHtml(text) {
-      const div = document.createElement('div')
-      div.textContent = text || ''
-      return div.innerHTML
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    async function loadGatherings() {
-      const { data, error } = await supabase
-        .from('gatherings')
-        .select('*')
-        .order('created_at', { ascending: false })
+    function showTab(tab) {
+      if (tab === "home") renderHome();
+      if (tab === "create") renderCreate();
+      if (tab === "profile") renderProfile();
+    }
 
-      if (error) {
-        gatheringsList.innerHTML = '<div class="error-message">Could not load gatherings. Check Supabase table and policies.</div>'
-        gatheringCount.textContent = '0'
-        console.error(error)
-        return
+    function defaultPrompts() {
+      return [
+        { question: "What movie should we watch?", answers: [] },
+        { question: "What game should we play?", answers: [] },
+        { question: "What music should we have in the background?", answers: [] },
+        { question: "What would you love us to talk about?", answers: [] }
+      ];
+    }
+
+    function renderHome() {
+      const app = document.getElementById("app");
+      let html = "<h3>Upcoming gatherings</h3>";
+
+      if (events.length === 0) {
+        html += "<div class='empty'>No gatherings yet — create one ✨</div>";
+      } else {
+        events.forEach((event, eventIndex) => {
+          const title = escapeHtml(event.title || "Untitled gathering");
+          const vibe = escapeHtml(event.vibe || "Meaningful");
+          const description = escapeHtml(event.description || "A warm space to connect.");
+
+          html += `
+            <div class="card">
+              <b>${title}</b>
+              <small>${description}</small>
+              <div class="vibe">${vibe}</div>
+
+              <div class="section-title">Prompts for the evening</div>
+          `;
+
+          (event.prompts || []).forEach((prompt, promptIndex) => {
+            html += `
+              <div class="prompt-box">
+                <div><strong>${escapeHtml(prompt.question)}</strong></div>
+
+                ${(prompt.answers || []).map(answer => `
+                  <div class="answer-item">${escapeHtml(answer)}</div>
+                `).join("")}
+
+                <input
+                  id="answer-${eventIndex}-${promptIndex}"
+                  placeholder="Add your idea..."
+                />
+                <button
+                  class="secondary-btn small-btn"
+                  onclick="addAnswer(${eventIndex}, ${promptIndex})"
+                >
+                  Add Answer
+                </button>
+              </div>
+            `;
+          });
+
+          html += `
+              <div class="section-title">Add your own question or comment</div>
+
+              ${(event.guestComments || []).map(comment => `
+                <div class="comment-item">${escapeHtml(comment)}</div>
+              `).join("")}
+
+              <textarea
+                id="comment-${eventIndex}"
+                placeholder="Share a thought, suggestion, or question..."
+              ></textarea>
+              <button
+                class="secondary-btn"
+                onclick="addComment(${eventIndex})"
+              >
+                Add Comment
+              </button>
+
+              <button onclick="join(${eventIndex})">Request to Join</button>
+            </div>
+          `;
+        });
       }
 
-      if (!data || data.length === 0) {
-        gatheringsList.innerHTML = '<div class="empty-state">No gatherings yet. Create your first one ✨</div>'
-        gatheringCount.textContent = '0'
-        return
-      }
+      app.innerHTML = html;
+    }
 
-      gatheringCount.textContent = data.length
-
-      gatheringsList.innerHTML = data.map(item => `
+    function renderCreate() {
+      const app = document.getElementById("app");
+      app.innerHTML = `
         <div class="card">
-          <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.description || '')}</p>
-          <div class="badge">${escapeHtml(item.vibe || 'Cozy')}</div>
-          <button class="button button-secondary">Request to Join</button>
+          <h3>Create a gathering</h3>
+
+          <input id="title" placeholder="Ladies Evening ✨" />
+          <input id="vibe" placeholder="Cozy, meaningful, fun..." />
+          <textarea id="desc" placeholder="What makes this gathering special?"></textarea>
+
+          <div class="section-title">Default prompts</div>
+          <small>These will be added automatically:</small>
+          <small>• What movie should we watch?</small>
+          <small>• What game should we play?</small>
+          <small>• What music should we have in the background?</small>
+          <small>• What would you love us to talk about?</small>
+
+          <button id="createGatheringBtn">Create Gathering</button>
         </div>
-      `).join('')
+      `;
+
+      document.getElementById("createGatheringBtn").addEventListener("click", createEvent);
     }
 
-    async function createGathering() {
-      const title = titleInput.value.trim()
-      const description = descriptionInput.value.trim()
-      const vibe = vibeInput.value
+    function renderProfile() {
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="card">
+          <h3>Your space</h3>
+          <p>${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</p>
+          <p>Delete all gatherings is available here only.</p>
+          <button id="resetBtn">Delete All Gatherings</button>
+        </div>
+      `;
+
+      document.getElementById("resetBtn").addEventListener("click", function () {
+        const confirmed = confirm("Delete all gatherings?");
+        if (!confirmed) return;
+        localStorage.removeItem(STORAGE_KEY);
+        events = [];
+        showTab("home");
+      });
+    }
+
+    function createEvent() {
+      const titleEl = document.getElementById("title");
+      const vibeEl = document.getElementById("vibe");
+      const descEl = document.getElementById("desc");
+
+      const title = titleEl.value.trim();
+      const vibe = vibeEl.value.trim();
+      const description = descEl.value.trim();
 
       if (!title) {
-        formMessage.innerHTML = '<div class="error-message">Please enter a title.</div>'
-        return
+        alert("Please add a gathering name ✨");
+        return;
       }
 
-      createBtn.disabled = true
-      createBtn.textContent = 'Creating...'
-      formMessage.innerHTML = ''
+      const newEvent = {
+        title: title,
+        vibe: vibe || "Meaningful",
+        description: description || "A warm space to connect.",
+        prompts: defaultPrompts(),
+        guestComments: []
+      };
 
-      const { error } = await supabase
-        .from('gatherings')
-        .insert([{ title, description, vibe }])
-
-      createBtn.disabled = false
-      createBtn.textContent = 'Create Gathering'
-
-      if (error) {
-        formMessage.innerHTML = '<div class="error-message">Could not create gathering. Check Supabase setup.</div>'
-        console.error(error)
-        return
-      }
-
-      titleInput.value = ''
-      descriptionInput.value = ''
-      vibeInput.value = 'Cozy'
-
-      await loadGatherings()
-      showScreen('home')
+      events.unshift(newEvent);
+      save();
+      alert("Gathering created ✨");
+      showTab("home");
     }
 
-    async function resetGatherings() {
-      const confirmed = window.confirm('Delete all gatherings?')
-      if (!confirmed) return
+    function addAnswer(eventIndex, promptIndex) {
+      const input = document.getElementById(`answer-${eventIndex}-${promptIndex}`);
+      if (!input) return;
 
-      const { error } = await supabase
-        .from('gatherings')
-        .delete()
-        .not('id', 'is', null)
+      const value = input.value.trim();
+      if (!value) return;
 
-      if (error) {
-        alert('Could not reset gatherings. Add delete policy in Supabase.')
-        console.error(error)
-        return
-      }
-
-      await loadGatherings()
-      showScreen('home')
+      events[eventIndex].prompts[promptIndex].answers.push(value);
+      save();
+      renderHome();
     }
 
-    createBtn.addEventListener('click', createGathering)
-    resetBtn.addEventListener('click', resetGatherings)
+    function addComment(eventIndex) {
+      const input = document.getElementById(`comment-${eventIndex}`);
+      if (!input) return;
 
-    loadGatherings()
+      const value = input.value.trim();
+      if (!value) return;
+
+      events[eventIndex].guestComments.push(value);
+      save();
+      renderHome();
+    }
+
+    function join(index) {
+      const event = events[index];
+      const title = event ? event.title : "this gathering";
+      alert(`Request sent for "${title}" 💛`);
+    }
+
+    document.getElementById("homeTab").addEventListener("click", function () {
+      showTab("home");
+    });
+
+    document.getElementById("createTab").addEventListener("click", function () {
+      showTab("create");
+    });
+
+    document.getElementById("profileTab").addEventListener("click", function () {
+      showTab("profile");
+    });
+
+    showTab("home");
   </script>
 </body>
 </html>
