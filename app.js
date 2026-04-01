@@ -1,4 +1,4 @@
-const API_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+const API_URL = "PASTE_YOUR_DEPLOYED_APPS_SCRIPT_EXEC_URL_HERE";
 
 let gatherings = [];
 
@@ -28,7 +28,7 @@ function render() {
       <strong>${escapeHtml(g.title)}</strong><br/>
       ${escapeHtml(g.description)}<br/>
       <em>${escapeHtml(g.vibe)}</em><br/>
-      <button onclick="joinGathering('${g.id || ""}', '${escapeHtml(g.title)}')">Request to Join</button>
+      <button onclick="joinGathering('${g.id || ""}', ${JSON.stringify(g.title || "")})">Request to Join</button>
     `;
 
     container.appendChild(div);
@@ -41,8 +41,14 @@ function render() {
 
 async function loadGatherings() {
   try {
+    console.log("Loading from:", API_URL);
     const res = await fetch(API_URL);
-    gatherings = await res.json();
+    console.log("GET status:", res.status, res.statusText);
+
+    const text = await res.text();
+    console.log("GET raw response:", text);
+
+    gatherings = JSON.parse(text);
 
     gatherings.sort((a, b) => {
       return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
@@ -50,8 +56,8 @@ async function loadGatherings() {
 
     render();
   } catch (error) {
-    console.error(error);
-    alert("Could not load shared gatherings.");
+    console.error("Load error:", error);
+    alert("Couldn’t load shared gatherings. Open browser console or verify Apps Script deployment URL.");
   }
 }
 
@@ -66,6 +72,8 @@ async function createGathering() {
   }
 
   try {
+    console.log("Posting to:", API_URL);
+
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -74,7 +82,12 @@ async function createGathering() {
       body: JSON.stringify({ title, description, vibe })
     });
 
-    const result = await res.json();
+    console.log("POST status:", res.status, res.statusText);
+
+    const text = await res.text();
+    console.log("POST raw response:", text);
+
+    const result = JSON.parse(text);
 
     if (result.success) {
       document.getElementById("title").value = "";
@@ -87,7 +100,7 @@ async function createGathering() {
       alert("Could not create gathering.");
     }
   } catch (error) {
-    console.error(error);
+    console.error("Create error:", error);
     alert("Could not create gathering.");
   }
 }
