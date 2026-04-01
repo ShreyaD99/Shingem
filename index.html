@@ -86,10 +86,10 @@
       background: white;
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
       border-top: 1px solid #eee;
       padding: 8px 0;
-      left: 0;
     }
 
     .tabs button {
@@ -157,24 +157,24 @@
   function renderHome() {
     let html = "<h3>Upcoming gatherings</h3>";
 
-    if (events.length === 0) {
+    if (!events || events.length === 0) {
       html += "<div class='empty'>No gatherings yet — create one ✨</div>";
+    } else {
+      events.forEach((event, i) => {
+        const title = escapeHtml(event.title || "Untitled gathering");
+        const description = escapeHtml(event.description || "A warm space to connect.");
+        const vibe = escapeHtml(event.vibe || "Meaningful");
+
+        html += `
+          <div class="card">
+            <b>${title}</b>
+            <small>${description}</small>
+            <div class="vibe">${vibe}</div>
+            <button onclick="join(${i})">Request to Join</button>
+          </div>
+        `;
+      });
     }
-
-    events.forEach((event, i) => {
-      const title = escapeHtml(event.title || "Untitled gathering");
-      const description = escapeHtml(event.description || "A warm space to connect.");
-      const vibe = escapeHtml(event.vibe || "Meaningful");
-
-      html += `
-        <div class="card">
-          <b>${title}</b>
-          <small>${description}</small>
-          <div class="vibe">${vibe}</div>
-          <button onclick="join(${i})">Request to Join</button>
-        </div>
-      `;
-    });
 
     document.getElementById("app").innerHTML = html;
   }
@@ -197,43 +197,52 @@
         <h3>Your space</h3>
         <p>${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</p>
         <p>Future: your circles, your people, your gatherings</p>
+        <button onclick="resetApp()">Reset App</button>
       </div>
     `;
   }
 
   function createEvent() {
-    const titleInput = document.getElementById("title");
-    const vibeInput = document.getElementById("vibe");
-    const descInput = document.getElementById("desc");
+    const titleEl = document.getElementById("title");
+    const vibeEl = document.getElementById("vibe");
+    const descEl = document.getElementById("desc");
 
-    if (!titleInput || !vibeInput || !descInput) {
+    if (!titleEl || !vibeEl || !descEl) {
       alert("Form not loaded correctly.");
       return;
     }
 
-    const title = titleInput.value.trim();
-    const vibe = vibeInput.value.trim();
-    const desc = descInput.value.trim();
+    const title = titleEl.value.trim();
+    const vibe = vibeEl.value.trim();
+    const description = descEl.value.trim();
 
     if (!title) {
       alert("Please add a gathering name ✨");
       return;
     }
 
-    events.unshift({
+    const newEvent = {
       title: title,
       vibe: vibe || "Meaningful",
-      description: desc || "A warm space to connect."
-    });
+      description: description || "A warm space to connect."
+    };
 
+    events.unshift(newEvent);
     save();
-    renderHome();
+    alert("Gathering created ✨");
+    showTab("home");
   }
 
   function join(index) {
     const event = events[index];
     const title = event ? event.title : "this gathering";
     alert(`Request sent for "${title}" 💛`);
+  }
+
+  function resetApp() {
+    localStorage.removeItem(STORAGE_KEY);
+    events = [];
+    showTab("home");
   }
 
   showTab("home");
