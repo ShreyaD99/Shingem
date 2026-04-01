@@ -11,7 +11,6 @@ function escapeHtml(text) {
 function render() {
   const container = document.getElementById("gatherings");
   const count = document.getElementById("count");
-
   if (!container) return;
 
   container.innerHTML = "";
@@ -23,14 +22,12 @@ function render() {
   gatherings.forEach((g) => {
     const div = document.createElement("div");
     div.className = "gathering";
-
     div.innerHTML = `
       <strong>${escapeHtml(g.title)}</strong><br/>
       ${escapeHtml(g.description || "")}<br/>
       <em>${escapeHtml(g.vibe || "")}</em><br/>
       <button onclick="joinGathering(${JSON.stringify(g.title || "")})">Request to Join</button>
     `;
-
     container.appendChild(div);
   });
 
@@ -39,28 +36,32 @@ function render() {
   }
 }
 
-async function loadGatherings() {
-  try {
-    const res = await fetch(API_URL + "?t=" + Date.now(), {
-      method: "GET",
-      cache: "no-store"
-    });
+function loadGatherings() {
+  const callbackName = "kindredCallback_" + Date.now();
 
-    const text = await res.text();
-    const data = JSON.parse(text);
+  window[callbackName] = function(data) {
+    try {
+      if (data && data.error) {
+        alert("Backend error: " + data.error);
+        return;
+      }
 
-    if (data && data.error) {
-      alert("Backend error: " + data.error);
-      return;
+      gatherings = Array.isArray(data) ? data : [];
+      gatherings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      render();
+    } finally {
+      delete window[callbackName];
     }
+  };
 
-    gatherings = Array.isArray(data) ? data : [];
-    gatherings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-    render();
-  } catch (error) {
-    console.error(error);
+  const script = document.createElement("script");
+  script.src = API_URL + "?callback=" + callbackName + "&t=" + Date.now();
+  script.onerror = function() {
+    delete window[callbackName];
     alert("Couldn’t load shared gatherings.");
-  }
+  };
+
+  document.body.appendChild(script);
 }
 
 function createHiddenIframe(name) {
