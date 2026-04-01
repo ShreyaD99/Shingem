@@ -1,41 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kindred</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-<body>
-  <div class="container">
+  const supabase = createClient(
+    'https://ydxcorkwshehscivneli.supabase.co',
+    'sb_publishable_FMYyj0UODgDKAKPNrsVikQ_oCZ5_wnz'
+  )
 
-    <div class="header">
-      <h1>Kindred</h1>
-      <p class="tagline">Build your chosen family</p>
-    </div>
+  async function testInsert() {
+    const { data, error } = await supabase
+      .from('gatherings')
+      .insert([
+        {
+          title: 'Friday Game Night',
+          description: 'Games and unwinding with friends',
+          vibe: 'Cozy'
+        }
+      ])
+      .select()
 
-    <div class="card">
-      <h2>Create Gathering</h2>
-      <input id="title" placeholder="Friday Game Night ✨" />
-      <input id="description" placeholder="Games, wine & cozy vibes" />
-      <input id="vibe" placeholder="Cozy / Fun / Chill" />
-      <button onclick="createGathering()">Create Gathering</button>
-    </div>
+    console.log('data:', data)
+    console.log('error:', error)
+  }
 
-    <div class="card">
-      <h2>All Gatherings</h2>
-      <div id="gatherings"></div>
-    </div>
-
-    <div class="card">
-      <h2>Profile</h2>
-      <p id="count">0 gatherings created</p>
-      <button class="secondary" onclick="resetApp()">Reset</button>
-    </div>
-
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+  window.testInsert = testInsert
+</script>
