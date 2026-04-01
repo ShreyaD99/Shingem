@@ -1,8 +1,345 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Index</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intentional Social</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f6f6f6;
+      color: #111;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 18px 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .container {
+      padding: 16px;
+      padding-bottom: 90px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    h2, h3, p {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font: inherit;
+      background: white;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #111;
+      color: white;
+      width: 100%;
+    }
+
+    .secondary {
+      background: #ececec;
+      color: #111;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .danger {
+      background: #ffe8e8;
+      color: #b00020;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      background: #f0f0f0;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-top: 8px;
+      margin-right: 6px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      border-top: 1px solid #e8e8e8;
+      padding: 8px;
+    }
+
+    .tabs button {
+      background: transparent;
+      color: #111;
+      font-weight: 600;
+    }
+
+    .empty {
+      text-align: center;
+      color: #666;
+      padding: 30px 10px;
+    }
+
+    .small-btn {
+      padding: 10px 12px;
+      width: auto;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to the Shingem</h1>
+  <header>Intentional Social ✨</header>
+
+  <div class="container" id="app"></div>
+
+  <div class="tabs">
+    <button onclick="showTab('home')">Home</button>
+    <button onclick="showTab('create')">Create</button>
+    <button onclick="showTab('profile')">Profile</button>
+  </div>
+
+  <script>
+    let events = JSON.parse(localStorage.getItem("intentional_social_events")) || [];
+    let joined = JSON.parse(localStorage.getItem("intentional_social_joined")) || [];
+
+    function save() {
+      localStorage.setItem("intentional_social_events", JSON.stringify(events));
+      localStorage.setItem("intentional_social_joined", JSON.stringify(joined));
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showTab(tab) {
+      if (tab === "home") renderHome();
+      if (tab === "create") renderCreate();
+      if (tab === "profile") renderProfile();
+    }
+
+    function renderHome() {
+      let html = `
+        <h2>Upcoming Events</h2>
+        <p class="muted">Curated hangs for people who want more intentional connection.</p>
+      `;
+
+      if (events.length === 0) {
+        html += `
+          <div class="card empty">
+            <p>No events yet.</p>
+            <p>Create your first one in the Create tab ✨</p>
+          </div>
+        `;
+      } else {
+        events.forEach((e, i) => {
+          const joinCount = joined.filter(id => id === e.id).length;
+          const alreadyJoined = joined.includes(e.id);
+
+          html += `
+            <div class="card">
+              <h3>${escapeHtml(e.title)}</h3>
+              <p class="muted">${escapeHtml(e.date || "Date TBD")} • ${escapeHtml(e.location || "Location TBD")}</p>
+              <div class="pill">${escapeHtml(e.vibe || "Good vibes")}</div>
+              <div class="pill">${joinCount} request${joinCount === 1 ? "" : "s"}</div>
+              <p style="margin-top:12px;">${escapeHtml(e.description || "No description yet.")}</p>
+
+              <button class="primary" onclick="joinEvent('${e.id}')" ${alreadyJoined ? "disabled" : ""}>
+                ${alreadyJoined ? "Requested" : "Request to Join"}
+              </button>
+
+              <button class="danger" onclick="deleteEvent('${e.id}')">Delete Event</button>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById("app").innerHTML = html;
+    }
+
+    function renderCreate() {
+      document.getElementById("app").innerHTML = `
+        <h2>Create Event</h2>
+        <p class="muted">Start with a simple intentional gathering.</p>
+
+        <div class="card">
+          <input id="title" placeholder="Event name" />
+          
+          <div class="row">
+            <input id="date" placeholder="Date (e.g. Friday, 7 PM)" />
+            <input id="location" placeholder="Location" />
+          </div>
+
+          <select id="vibe">
+            <option value="">Select vibe</option>
+            <option>Cozy</option>
+            <option>Fun</option>
+            <option>Deep Talk</option>
+            <option>Creative</option>
+            <option>Curated</option>
+            <option>Low-key</option>
+          </select>
+
+          <textarea id="description" placeholder="Describe the event..."></textarea>
+
+          <button class="primary" onclick="createEvent()">Create Event</button>
+        </div>
+      `;
+    }
+
+    function renderProfile() {
+      const totalEvents = events.length;
+      const totalJoined = joined.length;
+
+      document.getElementById("app").innerHTML = `
+        <h2>Your Profile</h2>
+
+        <div class="card">
+          <h3>Host Summary</h3>
+          <p><strong>${totalEvents}</strong> event${totalEvents === 1 ? "" : "s"} created</p>
+          <p><strong>${totalJoined}</strong> join request${totalJoined === 1 ? "" : "s"} made</p>
+        </div>
+
+        <div class="card">
+          <h3>Future upgrades</h3>
+          <p class="muted">
+            Real users, login, shared database, approval flow, circles, payments, guest lists, chat, and vibe matching.
+          </p>
+          <button class="secondary" onclick="exportData()">Export Demo Data</button>
+          <button class="secondary" onclick="resetApp()">Reset App</button>
+        </div>
+      `;
+    }
+
+    function createEvent() {
+      const title = document.getElementById("title").value.trim();
+      const date = document.getElementById("date").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const vibe = document.getElementById("vibe").value.trim();
+      const description = document.getElementById("description").value.trim();
+
+      if (!title) {
+        alert("Please add an event name.");
+        return;
+      }
+
+      const event = {
+        id: "e_" + Date.now(),
+        title,
+        date,
+        location,
+        vibe,
+        description
+      };
+
+      events.unshift(event);
+      save();
+      showTab("home");
+    }
+
+    function joinEvent(eventId) {
+      if (!joined.includes(eventId)) {
+        joined.push(eventId);
+        save();
+      }
+      alert("Join request sent ✨");
+      renderHome();
+    }
+
+    function deleteEvent(eventId) {
+      events = events.filter(e => e.id !== eventId);
+      joined = joined.filter(id => id !== eventId);
+      save();
+      renderHome();
+    }
+
+    function exportData() {
+      const data = {
+        events,
+        joined
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "intentional-social-demo-data.json";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function resetApp() {
+      const confirmed = confirm("Delete all demo data?");
+      if (!confirmed) return;
+
+      events = [];
+      joined = [];
+      save();
+      showTab("home");
+    }
+
+    showTab("home");
+  </script>
 </body>
 </html>
