@@ -3,52 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kindred Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    input, button {
-      display: block;
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 12px;
-      box-sizing: border-box;
-    }
-    .card {
-      border: 1px solid #ccc;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-    }
-  </style>
+  <title>Test</title>
 </head>
 <body>
-  <h1>Kindred Test</h1>
-
-  <input id="title" placeholder="Enter event name" />
-  <button onclick="createEvent()">Create Gathering</button>
-
-  <div id="result"></div>
+  <h1 id="heading">Test Page</h1>
+  <button id="btn">Tap Me</button>
 
   <script>
-    function createEvent() {
-      const title = document.getElementById("title").value.trim();
-
-      if (!title) {
-        alert("Please enter a title");
-        return;
-      }
-
-      document.getElementById("result").innerHTML = `
-        <div class="card">
-          <strong>${title}</strong>
-        </div>
-      `;
-
-      alert("Button works");
-    }
+    document.getElementById("btn").addEventListener("click", function () {
+      document.getElementById("heading").textContent = "It works!";
+      alert("JavaScript is running");
+    });
   </script>
 </body>
 </html>
