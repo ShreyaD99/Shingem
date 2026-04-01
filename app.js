@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycby7Kvssv5Emly1ofI64YoQcr9ASq2l2pXQY2z9q8EC5ugoRFy0OJyLmUu8KaRPBGjEF0A/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz5JFwvP2J_LFVB4aN_VDrsPdmVQl0s6JL-iJQkdaVZr7ICYaILOWZAcgiD56yzRmFlow/exec";
 
 let gatherings = [];
 
@@ -54,55 +54,17 @@ function loadGatherings() {
     }
   };
 
+  const oldScripts = document.querySelectorAll('script[data-kindred="jsonp"]');
+  oldScripts.forEach((s) => s.remove());
+
   const script = document.createElement("script");
   script.src = API_URL + "?callback=" + callbackName + "&t=" + Date.now();
+  script.dataset.kindred = "jsonp";
   script.onerror = function() {
     delete window[callbackName];
     alert("Couldn’t load shared gatherings.");
   };
-
   document.body.appendChild(script);
-}
-
-function createHiddenIframe(name) {
-  let iframe = document.getElementById(name);
-  if (!iframe) {
-    iframe = document.createElement("iframe");
-    iframe.name = name;
-    iframe.id = name;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-  }
-  return iframe;
-}
-
-function postViaForm(data) {
-  return new Promise((resolve) => {
-    const frameName = "kindred-submit-frame";
-    createHiddenIframe(frameName);
-
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = API_URL;
-    form.target = frameName;
-    form.style.display = "none";
-
-    Object.entries(data).forEach(([key, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value ?? "";
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-
-    setTimeout(() => {
-      form.remove();
-      resolve();
-    }, 1200);
-  });
 }
 
 async function createGathering() {
@@ -115,15 +77,28 @@ async function createGathering() {
     return;
   }
 
+  const url =
+    API_URL +
+    "?title=" + encodeURIComponent(title) +
+    "&description=" + encodeURIComponent(description) +
+    "&vibe=" + encodeURIComponent(vibe) +
+    "&t=" + Date.now();
+
   try {
-    await postViaForm({ title, description, vibe });
+    const res = await fetch(url, { method: "GET" });
+    const text = await res.text();
+
+    if (!res.ok) {
+      alert("Could not create gathering.");
+      return;
+    }
 
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("vibe").value = "";
 
     alert("✨ Gathering created!");
-    setTimeout(loadGatherings, 1500);
+    setTimeout(loadGatherings, 700);
   } catch (error) {
     console.error(error);
     alert("Could not create gathering.");
