@@ -1,4 +1,5 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwboJ7yLK6XZdjI3bQH7xeV-jL2JSxk1QnAnJ6AXKtb_LrI47lhDDjMY5T3tXuDURsxoQ/exec";
+
 let gatherings = [];
 
 function escapeHtml(text) {
@@ -25,9 +26,9 @@ function render() {
 
     div.innerHTML = `
       <strong>${escapeHtml(g.title)}</strong><br/>
-      ${escapeHtml(g.description)}<br/>
-      <em>${escapeHtml(g.vibe)}</em><br/>
-      <button onclick="joinGathering('${g.id || ""}', ${JSON.stringify(g.title || "")})">Request to Join</button>
+      ${escapeHtml(g.description || "")}<br/>
+      <em>${escapeHtml(g.vibe || "")}</em><br/>
+      <button onclick="joinGathering(${JSON.stringify(g.title || "")})">Request to Join</button>
     `;
 
     container.appendChild(div);
@@ -40,23 +41,25 @@ function render() {
 
 async function loadGatherings() {
   try {
-    console.log("Loading from:", API_URL);
-    const res = await fetch(API_URL);
-    console.log("GET status:", res.status, res.statusText);
-
-    const text = await res.text();
-    console.log("GET raw response:", text);
-
-    gatherings = JSON.parse(text);
-
-    gatherings.sort((a, b) => {
-      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    const res = await fetch(API_URL, {
+      method: "GET",
+      mode: "cors"
     });
 
+    const text = await res.text();
+    const data = JSON.parse(text);
+
+    if (data.error) {
+      alert("Backend error: " + data.error);
+      return;
+    }
+
+    gatherings = Array.isArray(data) ? data : [];
+    gatherings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     render();
   } catch (error) {
-    console.error("Load error:", error);
-    alert("Couldn’t load shared gatherings. Open browser console or verify Apps Script deployment URL.");
+    console.error(error);
+    alert("Couldn’t load shared gatherings. Try refreshing the page once.");
   }
 }
 
@@ -71,21 +74,16 @@ async function createGathering() {
   }
 
   try {
-    console.log("Posting to:", API_URL);
-
     const res = await fetch(API_URL, {
       method: "POST",
+      mode: "cors",
       headers: {
         "Content-Type": "text/plain;charset=utf-8"
       },
       body: JSON.stringify({ title, description, vibe })
     });
 
-    console.log("POST status:", res.status, res.statusText);
-
     const text = await res.text();
-    console.log("POST raw response:", text);
-
     const result = JSON.parse(text);
 
     if (result.success) {
@@ -96,15 +94,15 @@ async function createGathering() {
       alert("✨ Gathering created!");
       await loadGatherings();
     } else {
-      alert("Could not create gathering.");
+      alert("Could not create gathering: " + (result.error || "Unknown error"));
     }
   } catch (error) {
-    console.error("Create error:", error);
+    console.error(error);
     alert("Could not create gathering.");
   }
 }
 
-function joinGathering(id, title) {
+function joinGathering(title) {
   alert(`Request sent to join "${title}" ✨`);
 }
 
