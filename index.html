@@ -7,8 +7,7 @@
   <style>
     :root {
       --bg: #fbf7f3;
-      --bg-2: #f5ede5;
-      --card: rgba(255,255,255,0.9);
+      --card: rgba(255,255,255,0.92);
       --text: #231f1c;
       --text-soft: #6d655f;
       --line: rgba(120,100,82,0.10);
@@ -22,16 +21,11 @@
       --danger: #9f4b4b;
       --bubble-self: #efe0d1;
       --bubble-other: #ffffff;
-      --glass: rgba(255,255,255,0.72);
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
@@ -48,13 +42,11 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 30;
+      z-index: 20;
       padding: 22px 20px 20px;
       text-align: center;
       color: white;
       background: linear-gradient(135deg, rgba(28,24,22,0.97), rgba(62,48,39,0.92));
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
       box-shadow: 0 10px 30px rgba(28,24,22,0.18);
@@ -64,14 +56,12 @@
       margin: 0;
       font-size: 26px;
       font-weight: 700;
-      letter-spacing: 0.2px;
     }
 
     header p {
       margin: 7px 0 0;
       font-size: 13px;
       opacity: 0.88;
-      letter-spacing: 0.2px;
     }
 
     .container {
@@ -80,49 +70,22 @@
       padding: 18px 16px 110px;
     }
 
-    .fade-in {
-      animation: fadeIn 0.28s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-card,
-    .card {
+    .card, .hero-card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 24px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
     }
 
     .hero-card {
       padding: 18px;
       margin-bottom: 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(249,243,236,0.94) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(249,243,236,0.96) 100%);
     }
 
     .card {
       padding: 18px;
       margin-bottom: 16px;
-    }
-
-    .hero-title {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-
-    .hero-copy,
-    .screen-subtitle,
-    .small-text {
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.55;
     }
 
     .screen-title {
@@ -131,8 +94,23 @@
       margin: 8px 2px 8px;
     }
 
+    .screen-subtitle,
+    .hero-copy,
+    .small-text {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
     .screen-subtitle {
       margin: 0 2px 18px;
+    }
+
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
     }
 
     .event-grid {
@@ -259,7 +237,7 @@
 
     .prompt-box,
     .people-item {
-      background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(249,244,239,0.94) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(249,244,239,0.96) 100%);
       border: 1px solid rgba(120,100,82,0.09);
       padding: 14px;
       margin-top: 12px;
@@ -273,7 +251,7 @@
     }
 
     .suggestion-item {
-      background: rgba(255,255,255,0.94);
+      background: rgba(255,255,255,0.95);
       border: 1px solid rgba(120,100,82,0.08);
       padding: 12px;
       margin-top: 9px;
@@ -326,7 +304,7 @@
     input, textarea, select {
       width: 100%;
       border: 1px solid rgba(120,100,82,0.12);
-      background: rgba(255,255,255,0.94);
+      background: rgba(255,255,255,0.96);
       color: var(--text);
       border-radius: 15px;
       padding: 12px 14px;
@@ -334,7 +312,6 @@
       margin-top: 8px;
       margin-bottom: 10px;
       outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
       font-family: inherit;
     }
 
@@ -342,11 +319,6 @@
       min-height: 96px;
       resize: vertical;
       line-height: 1.5;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      border-color: rgba(185,146,92,0.42);
-      box-shadow: 0 0 0 4px rgba(220,198,178,0.18);
     }
 
     button {
@@ -358,18 +330,9 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.12s ease, opacity 0.18s ease, box-shadow 0.18s ease;
       background: linear-gradient(135deg, #24201d 0%, #3d322a 100%);
       color: white;
       box-shadow: 0 8px 18px rgba(36,32,29,0.18);
-    }
-
-    button:hover {
-      opacity: 0.97;
-    }
-
-    button:active {
-      transform: scale(0.985);
     }
 
     .secondary-btn {
@@ -498,9 +461,8 @@
       align-items: center;
       gap: 8px;
       padding: 8px;
-      background: var(--glass);
+      background: rgba(255,255,255,0.78);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(120,100,82,0.10);
       border-radius: 22px;
       box-shadow: 0 18px 40px rgba(70,54,42,0.10);
@@ -533,10 +495,6 @@
         grid-template-columns: 1fr;
       }
 
-      .date-card {
-        width: 96px;
-      }
-
       .event-title {
         font-size: 18px;
       }
@@ -566,7 +524,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "nest_premium_v3";
+    const STORAGE_KEY = "nest_premium_v3_fixed";
     let events = [];
 
     try {
@@ -614,7 +572,7 @@
 
     function renderHero() {
       return `
-        <div class="hero-card fade-in">
+        <div class="hero-card">
           <div class="hero-title">Create evenings people want to remember.</div>
           <div class="hero-copy">Plan cozy gatherings, collect ideas, and make your people feel at home.</div>
         </div>
@@ -689,17 +647,17 @@
 
       let html = renderHero();
       html += `
-        <div class="screen-title fade-in">Upcoming gatherings</div>
-        <div class="screen-subtitle fade-in">Soft plans, warm energy, and thoughtful connection.</div>
+        <div class="screen-title">Upcoming gatherings</div>
+        <div class="screen-subtitle">Soft plans, warm energy, and thoughtful connection.</div>
       `;
 
       if (!events.length) {
-        html += `<div class="empty fade-in">No gatherings yet — create one ✨</div>`;
+        html += `<div class="empty">No gatherings yet — create one ✨</div>`;
       } else {
         events.forEach((event, index) => {
           const dateCard = parseDateForCard(event.date);
           html += `
-            <div class="card fade-in">
+            <div class="card">
               <div class="event-grid">
                 <div class="date-card">
                   <div class="date-month">${escapeHtml(dateCard.month)}</div>
@@ -735,10 +693,10 @@
       setActiveTab("create");
 
       document.getElementById("app").innerHTML = `
-        <div class="screen-title fade-in">Create a gathering</div>
-        <div class="screen-subtitle fade-in">Shape the mood, add the details, and make it feel inviting.</div>
+        <div class="screen-title">Create a gathering</div>
+        <div class="screen-subtitle">Shape the mood, add the details, and make it feel inviting.</div>
 
-        <div class="card fade-in">
+        <div class="card">
           <input id="title" placeholder="Ladies Evening ✨" />
 
           <div class="form-grid">
@@ -777,16 +735,16 @@
       setActiveTab("profile");
 
       document.getElementById("app").innerHTML = `
-        <div class="screen-title fade-in">Your space</div>
-        <div class="screen-subtitle fade-in">A quiet place to manage your gatherings and reset things when needed.</div>
+        <div class="screen-title">Your space</div>
+        <div class="screen-subtitle">A quiet place to manage your gatherings and reset things when needed.</div>
 
-        <div class="card fade-in">
+        <div class="card">
           <div style="font-size:18px; font-weight:700;">${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</div>
           <div class="section-note">Everything is stored locally on this device for now.</div>
           <button class="danger-btn" onclick="resetAllEvents()">Delete All Gatherings</button>
         </div>
 
-        <div class="card fade-in">
+        <div class="card">
           <div class="section-title" style="margin-top:0;">Manage gatherings</div>
           ${
             !events.length
@@ -811,7 +769,7 @@
       const topPicks = getTopPicks(event);
 
       let html = `
-        <div class="card fade-in">
+        <div class="card">
           <button class="secondary-btn" onclick="renderHome()">← Back to Home</button>
 
           <div class="section-title" style="margin-top:16px; font-size:20px;">${escapeHtml(event.title)}</div>
