@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,506 +6,504 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nest</title>
   <style>
-    :root {
-      --bg: #fbf7f3;
-      --card: rgba(255,255,255,0.92);
-      --text: #231f1c;
-      --text-soft: #6d655f;
-      --line: rgba(120,100,82,0.10);
-      --pill: #f5eee7;
-      --accent: #eadbcc;
-      --accent-2: #f1e5d9;
-      --shadow: 0 10px 30px rgba(70,54,42,0.08);
-      --shadow-soft: 0 6px 18px rgba(70,54,42,0.05);
-      --gold: #b9925c;
-      --pink: #c86d7a;
-      --danger: #9f4b4b;
-      --bubble-self: #efe0d1;
-      --bubble-other: #ffffff;
+    :root{
+      --bg:#f8f5f1;
+      --bg-soft:#fcfaf8;
+      --card:#ffffff;
+      --text:#181615;
+      --muted:#7b746d;
+      --line:#ece5dd;
+      --accent:#e9dfd4;
+      --accent-2:#f3ede6;
+      --shadow:0 8px 30px rgba(32,25,20,0.06);
+      --shadow-soft:0 4px 14px rgba(32,25,20,0.04);
+      --rose:#b77481;
+      --danger:#9c5a5a;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
     }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
-      color: var(--text);
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
       background:
-        radial-gradient(circle at top left, #fffaf5 0%, transparent 35%),
-        radial-gradient(circle at top right, #f7efe7 0%, transparent 30%),
-        linear-gradient(180deg, var(--bg) 0%, #f8f2eb 100%);
-      min-height: 100vh;
+        radial-gradient(circle at top left, #fffdfb 0%, transparent 28%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+      color:var(--text);
+      min-height:100vh;
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      padding: 22px 20px 20px;
-      text-align: center;
-      color: white;
-      background: linear-gradient(135deg, rgba(28,24,22,0.97), rgba(62,48,39,0.92));
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-      box-shadow: 0 10px 30px rgba(28,24,22,0.18);
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      padding:22px 18px 18px;
+      text-align:center;
+      background:rgba(248,245,241,0.82);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(24,22,21,0.06);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 700;
+    header h1{
+      margin:0;
+      font-size:24px;
+      font-weight:700;
+      letter-spacing:-0.02em;
     }
 
-    header p {
-      margin: 7px 0 0;
-      font-size: 13px;
-      opacity: 0.88;
+    header p{
+      margin:6px 0 0;
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:-0.01em;
     }
 
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 18px 16px 110px;
+    .container{
+      max-width:820px;
+      margin:0 auto;
+      padding:18px 14px 110px;
     }
 
-    .card, .hero-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
+    .fade-in{
+      animation:fadeIn .22s ease;
     }
 
-    .hero-card {
-      padding: 18px;
-      margin-bottom: 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(249,243,236,0.96) 100%);
+    @keyframes fadeIn{
+      from{opacity:0;transform:translateY(4px)}
+      to{opacity:1;transform:translateY(0)}
     }
 
-    .card {
-      padding: 18px;
-      margin-bottom: 16px;
+    .hero,
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
     }
 
-    .screen-title {
-      font-size: 22px;
-      font-weight: 700;
-      margin: 8px 2px 8px;
+    .hero{
+      padding:22px 18px;
+      margin-bottom:16px;
+      background:linear-gradient(180deg,#fff 0%, #fbf8f5 100%);
     }
 
-    .screen-subtitle,
+    .hero-title{
+      font-size:22px;
+      line-height:1.2;
+      font-weight:700;
+      letter-spacing:-0.03em;
+      margin-bottom:8px;
+    }
+
     .hero-copy,
-    .small-text {
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.55;
+    .screen-subtitle,
+    .small-text,
+    .meta-text{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
     }
 
-    .screen-subtitle {
-      margin: 0 2px 18px;
+    .screen-title{
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:-0.03em;
+      margin:6px 2px 6px;
     }
 
-    .hero-title {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 6px;
+    .screen-subtitle{
+      margin:0 2px 18px;
     }
 
-    .event-grid {
-      display: grid;
-      grid-template-columns: 92px 1fr;
-      gap: 14px;
-      align-items: start;
+    .card{
+      padding:18px;
+      margin-bottom:14px;
     }
 
-    .date-card {
-      background: linear-gradient(180deg, #fff 0%, #f7efe7 100%);
-      border: 1px solid rgba(120,100,82,0.08);
-      border-radius: 20px;
-      padding: 12px;
-      text-align: center;
-      box-shadow: var(--shadow-soft);
+    .event-layout{
+      display:grid;
+      grid-template-columns:84px 1fr;
+      gap:14px;
+      align-items:start;
     }
 
-    .date-month {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      color: var(--gold);
-      text-transform: uppercase;
+    .date-box{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,#fff 0%, #faf6f2 100%);
+      text-align:center;
+      padding:12px 8px;
+      box-shadow:var(--shadow-soft);
     }
 
-    .date-day {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1.05;
-      margin-top: 4px;
+    .date-month{
+      font-size:11px;
+      font-weight:700;
+      color:#9a8773;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
     }
 
-    .date-weekday {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-top: 4px;
+    .date-day{
+      font-size:28px;
+      line-height:1;
+      font-weight:700;
+      margin-top:4px;
+      letter-spacing:-0.04em;
     }
 
-    .event-title {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.25;
+    .date-weekday{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
     }
 
-    .event-description {
-      margin-top: 8px;
-      color: var(--text-soft);
-      line-height: 1.55;
-      font-size: 14px;
+    .event-title{
+      font-size:19px;
+      line-height:1.25;
+      font-weight:700;
+      letter-spacing:-0.02em;
     }
 
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
+    .event-description{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--pill);
-      color: #5f544b;
-      border: 1px solid rgba(120,100,82,0.08);
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
+    .meta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
     }
 
-    .section-title {
-      margin-top: 20px;
-      margin-bottom: 10px;
-      font-size: 15px;
-      font-weight: 700;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:600;
+      color:#595149;
+      background:#f6f1eb;
+      border:1px solid #eee6dd;
     }
 
-    .section-note {
-      color: var(--text-soft);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-top: -2px;
-      margin-bottom: 10px;
+    .section-title{
+      margin-top:20px;
+      margin-bottom:10px;
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:-0.01em;
     }
 
-    .host-note {
-      background: linear-gradient(180deg, #f8f1ea 0%, #f5ede5 100%);
-      border: 1px solid rgba(185,146,92,0.14);
-      border-left: 4px solid var(--gold);
-      padding: 14px;
-      border-radius: 16px;
-      color: #54483f;
-      line-height: 1.55;
+    .host-note{
+      padding:14px;
+      border-radius:18px;
+      background:linear-gradient(180deg,#faf5ef 0%, #f6eee6 100%);
+      border:1px solid #efe3d6;
+      color:#5d534a;
+      line-height:1.55;
     }
 
-    .top-pick-item,
-    .suggestion-item,
-    .chat-message,
-    .people-item,
-    .prompt-box {
-      border-radius: 18px;
+    .subtabs{
+      display:flex;
+      gap:8px;
+      margin-top:18px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
     }
 
-    .top-pick-item {
-      background: linear-gradient(180deg, #f7efe7 0%, #f4eadf 100%);
-      border: 1px solid rgba(185,146,92,0.14);
-      padding: 13px 14px;
-      margin-top: 10px;
-      box-shadow: var(--shadow-soft);
+    .subtabs button{
+      width:auto;
+      margin-top:0;
+      padding:9px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:#5d554e;
+      box-shadow:none;
     }
 
-    .top-pick-title {
-      font-weight: 700;
-      margin-bottom: 4px;
+    .subtabs button.active{
+      background:linear-gradient(180deg,var(--accent-2) 0%, var(--accent) 100%);
+      color:#372f2a;
     }
 
-    .top-pick-meta {
-      color: var(--text-soft);
-      font-size: 12.5px;
-      line-height: 1.45;
+    .top-pick,
+    .item,
+    .group-box,
+    .chat-bubble{
+      border-radius:18px;
     }
 
-    .prompt-box,
-    .people-item {
-      background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(249,244,239,0.96) 100%);
-      border: 1px solid rgba(120,100,82,0.09);
-      padding: 14px;
-      margin-top: 12px;
-      box-shadow: var(--shadow-soft);
+    .top-pick{
+      padding:13px 14px;
+      background:linear-gradient(180deg,#faf5ef 0%, #f6eee7 100%);
+      border:1px solid #efe2d4;
+      margin-top:10px;
     }
 
-    .prompt-question {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 6px;
+    .top-pick-title{
+      font-weight:700;
+      margin-bottom:4px;
     }
 
-    .suggestion-item {
-      background: rgba(255,255,255,0.95);
-      border: 1px solid rgba(120,100,82,0.08);
-      padding: 12px;
-      margin-top: 9px;
-      box-shadow: 0 3px 10px rgba(70,54,42,0.03);
+    .top-pick-meta{
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.45;
     }
 
-    .item-line {
-      line-height: 1.5;
-      font-size: 14px;
+    .group-box{
+      padding:14px;
+      margin-top:12px;
+      background:#fcfaf8;
+      border:1px solid var(--line);
     }
 
-    .row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 8px;
+    .item{
+      padding:12px;
+      margin-top:10px;
+      background:#fff;
+      border:1px solid #efe9e2;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .item-line{
+      font-size:14px;
+      line-height:1.5;
     }
 
-    .subtabs {
-      display: flex;
-      gap: 8px;
-      margin-top: 18px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:8px;
     }
 
-    .subtabs button {
-      width: auto;
-      margin-top: 0;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: white;
-      color: #544941;
-      box-shadow: none;
-      border: 1px solid rgba(120,100,82,0.10);
+    .avatar-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:12px;
+      flex-wrap:wrap;
     }
 
-    .subtabs button.active {
-      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
-      color: #40362f;
+    .avatar-stack{
+      display:flex;
+      align-items:center;
     }
 
-    input, textarea, select {
-      width: 100%;
-      border: 1px solid rgba(120,100,82,0.12);
-      background: rgba(255,255,255,0.96);
-      color: var(--text);
-      border-radius: 15px;
-      padding: 12px 14px;
-      font-size: 14px;
-      margin-top: 8px;
-      margin-bottom: 10px;
-      outline: none;
-      font-family: inherit;
+    .avatar{
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,#efe5d8 0%, #e7d8c7 100%);
+      border:2px solid #fff;
+      margin-left:-7px;
+      font-size:11px;
+      font-weight:700;
+      color:#5e5348;
+      box-shadow:var(--shadow-soft);
     }
 
-    textarea {
-      min-height: 96px;
-      resize: vertical;
-      line-height: 1.5;
+    .avatar:first-child{
+      margin-left:0;
     }
 
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 15px;
-      padding: 12px 14px;
-      margin-top: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      background: linear-gradient(135deg, #24201d 0%, #3d322a 100%);
-      color: white;
-      box-shadow: 0 8px 18px rgba(36,32,29,0.18);
+    .chat-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
     }
 
-    .secondary-btn {
-      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
-      color: #473d36;
-      box-shadow: 0 8px 18px rgba(141,116,88,0.12);
+    .chat-bubble{
+      max-width:82%;
+      padding:12px 14px;
+      border:1px solid #efe7de;
+      box-shadow:var(--shadow-soft);
+      font-size:14px;
+      line-height:1.45;
     }
 
-    .like-btn, .tiny-btn {
-      width: auto;
-      padding: 8px 12px;
-      margin-top: 0;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 999px;
-      background: white;
-      color: var(--pink);
-      border: 1px solid rgba(200,109,122,0.18);
-      box-shadow: none;
+    .chat-bubble.other{
+      align-self:flex-start;
+      background:#fff;
+      border-top-left-radius:8px;
     }
 
-    .danger-btn {
-      background: linear-gradient(135deg, #8f4949 0%, #a34f4f 100%);
-      color: white;
+    .chat-bubble.self{
+      align-self:flex-end;
+      background:#efe3d6;
+      border-top-right-radius:8px;
     }
 
-    .empty {
-      text-align: center;
-      color: var(--text-soft);
-      padding: 38px 20px;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.7);
-      border: 1px dashed rgba(120,100,82,0.18);
-      box-shadow: var(--shadow-soft);
+    .chat-name{
+      font-size:12px;
+      font-weight:700;
+      color:#655c55;
+      margin-bottom:4px;
     }
 
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(120,100,82,0.12), transparent);
-      margin: 16px 0;
+    .chat-time{
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+      text-align:right;
     }
 
-    .chat-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
+    input, textarea, select{
+      width:100%;
+      border:1px solid #ece5dd;
+      background:#fff;
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+      margin-top:8px;
+      margin-bottom:10px;
+      outline:none;
+      font-family:inherit;
     }
 
-    .chat-message {
-      max-width: 82%;
-      padding: 12px 14px;
-      box-shadow: var(--shadow-soft);
-      font-size: 14px;
-      line-height: 1.45;
-      border: 1px solid rgba(120,100,82,0.08);
+    textarea{
+      min-height:96px;
+      resize:vertical;
+      line-height:1.5;
     }
 
-    .chat-message.other {
-      align-self: flex-start;
-      background: var(--bubble-other);
-      border-top-left-radius: 8px;
+    input:focus, textarea:focus, select:focus{
+      border-color:#d7c8b9;
+      box-shadow:0 0 0 4px rgba(225,213,201,0.35);
     }
 
-    .chat-message.self {
-      align-self: flex-end;
-      background: var(--bubble-self);
-      border-top-right-radius: 8px;
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
     }
 
-    .chat-name {
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #5f544b;
+    button{
+      width:100%;
+      border:none;
+      border-radius:16px;
+      padding:12px 14px;
+      margin-top:10px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(135deg,#201c19 0%, #37302b 100%);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(36,32,29,0.14);
     }
 
-    .chat-time {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-soft);
-      text-align: right;
+    button:active{
+      transform:scale(.985);
     }
 
-    .avatar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      flex-wrap: wrap;
+    .secondary-btn{
+      background:linear-gradient(180deg,var(--accent-2) 0%, var(--accent) 100%);
+      color:#433a34;
+      box-shadow:none;
     }
 
-    .avatar-stack {
-      display: flex;
-      align-items: center;
+    .like-btn, .tiny-btn{
+      width:auto;
+      padding:8px 12px;
+      margin-top:0;
+      font-size:12px;
+      border-radius:999px;
+      box-shadow:none;
+      background:#fff;
+      color:var(--rose);
+      border:1px solid #eed9dd;
     }
 
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #f2e6da 0%, #e8d6c4 100%);
-      border: 2px solid white;
-      color: #594e45;
-      font-size: 12px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: -8px;
-      box-shadow: var(--shadow-soft);
+    .danger-btn{
+      background:linear-gradient(135deg,#916060 0%, #a25f5f 100%);
+      color:#fff;
     }
 
-    .avatar:first-child {
-      margin-left: 0;
+    .empty{
+      text-align:center;
+      padding:38px 20px;
+      color:var(--muted);
+      background:#fff;
+      border:1px dashed #e9e0d7;
+      border-radius:24px;
     }
 
-    .tabs {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      width: min(92vw, 520px);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(120,100,82,0.10);
-      border-radius: 22px;
-      box-shadow: 0 18px 40px rgba(70,54,42,0.10);
-      z-index: 30;
+    .divider{
+      height:1px;
+      background:linear-gradient(90deg,transparent, #e9e0d7, transparent);
+      margin:16px 0;
     }
 
-    .tabs button {
-      width: 100%;
-      margin-top: 0;
-      padding: 11px 12px;
-      border-radius: 14px;
-      background: transparent;
-      color: #544941;
-      box-shadow: none;
-      font-weight: 700;
+    .tabs{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:16px;
+      width:min(92vw,520px);
+      display:flex;
+      gap:8px;
+      padding:8px;
+      background:rgba(255,255,255,0.78);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      border:1px solid rgba(120,100,82,0.10);
+      border-radius:22px;
+      box-shadow:0 18px 40px rgba(70,54,42,0.10);
+      z-index:40;
     }
 
-    .tabs button.active {
-      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
-      color: #40362f;
+    .tabs button{
+      width:100%;
+      margin-top:0;
+      padding:11px 12px;
+      border-radius:14px;
+      background:transparent;
+      color:#5a5149;
+      box-shadow:none;
     }
 
-    @media (max-width: 640px) {
-      .container {
-        padding: 16px 14px 110px;
+    .tabs button.active{
+      background:linear-gradient(180deg,var(--accent-2) 0%, var(--accent) 100%);
+      color:#372f2a;
+    }
+
+    @media (max-width:640px){
+      .container{
+        padding:16px 14px 110px;
       }
 
-      .form-grid,
-      .event-grid {
-        grid-template-columns: 1fr;
+      .event-layout,
+      .form-grid{
+        grid-template-columns:1fr;
       }
 
-      .event-title {
-        font-size: 18px;
+      .chat-bubble{
+        max-width:90%;
       }
 
-      .screen-title {
-        font-size: 20px;
+      .event-title{
+        font-size:18px;
       }
 
-      .chat-message {
-        max-width: 90%;
+      .screen-title{
+        font-size:20px;
       }
     }
   </style>
@@ -523,19 +522,22 @@
     <button id="profileTab">Profile</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const STORAGE_KEY = "nest_premium_v3_fixed";
+    const SUPABASE_URL = "https://ydxcorkwshehscivneli.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkeGNvcmt3c2hlaHNjaXZuZWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMjgwNTAsImV4cCI6MjA5MDYwNDA1MH0.geVzJYnkfa3HIlaRNBT2bdv13YbxuR6gmFkxZnspY7c";
+    const ADMIN_EMAIL = "prudentshreya@gmail.com";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let currentProfile = null;
     let events = [];
-
-    try {
-      events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch (e) {
-      events = [];
-    }
-
-    function save() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-    }
+    let promptsByEvent = {};
+    let answersByPrompt = {};
+    let commentsByEvent = {};
+    let chatByEvent = {};
+    let joinRequestsByEvent = {};
 
     function escapeHtml(text) {
       return String(text ?? "")
@@ -552,15 +554,6 @@
       return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     }
 
-    function defaultPromptQuestions() {
-      return [
-        "What movie should we watch?",
-        "What game should we play?",
-        "What music should we have in the background?",
-        "What would you love us to talk about?"
-      ];
-    }
-
     function setActiveTab(tab) {
       document.getElementById("homeTab").classList.remove("active");
       document.getElementById("createTab").classList.remove("active");
@@ -570,13 +563,235 @@
       if (tab === "profile") document.getElementById("profileTab").classList.add("active");
     }
 
-    function renderHero() {
-      return `
-        <div class="hero-card">
-          <div class="hero-title">Create evenings people want to remember.</div>
-          <div class="hero-copy">Plan cozy gatherings, collect ideas, and make your people feel at home.</div>
+    function defaultPromptQuestions() {
+      return [
+        "What movie should we watch?",
+        "What game should we play?",
+        "What music should we have in the background?",
+        "What would you love us to talk about?"
+      ];
+    }
+
+    async function sendMagicLink() {
+      const email = document.getElementById("emailInput").value.trim();
+      if (!email) return alert("Please enter your email.");
+
+      const { error } = await supabaseClient.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.href
+        }
+      });
+
+      if (error) return alert(error.message);
+
+      document.getElementById("app").innerHTML = `
+        <div class="card">
+          <div class="section-title" style="margin-top:0;">Check your email ✨</div>
+          <div class="section-note">We sent a magic link to <strong>${escapeHtml(email)}</strong>.</div>
+          <button class="secondary-btn" onclick="renderLogin()">Use another email</button>
         </div>
       `;
+    }
+
+    async function ensureProfileRow() {
+      if (!currentUser) return;
+
+      const { data: existing } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+      if (!existing) {
+        const { error } = await supabaseClient.from("profiles").insert([{
+          id: currentUser.id,
+          full_name: "",
+          phone_number: "",
+          instagram_handle: "",
+          linkedin_url: "",
+          profile_completed: false
+        }]);
+        if (error) alert(error.message);
+      }
+    }
+
+    async function loadProfile() {
+      if (!currentUser) {
+        currentProfile = null;
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .single();
+
+      if (error) return alert(error.message);
+      currentProfile = data;
+    }
+
+    function profileIsComplete(profile) {
+      return !!(
+        profile &&
+        profile.full_name &&
+        profile.instagram_handle &&
+        profile.linkedin_url &&
+        profile.profile_completed
+      );
+    }
+
+    async function saveProfile() {
+      const fullName = document.getElementById("fullName").value.trim();
+      const phoneNumber = document.getElementById("profilePhone").value.trim();
+      const instagram = document.getElementById("instagramHandle").value.trim();
+      const linkedin = document.getElementById("linkedinUrl").value.trim();
+
+      if (!fullName || !instagram || !linkedin) {
+        return alert("Please complete all required fields.");
+      }
+
+      const { error } = await supabaseClient
+        .from("profiles")
+        .update({
+          full_name: fullName,
+          phone_number: phoneNumber,
+          instagram_handle: instagram,
+          linkedin_url: linkedin,
+          profile_completed: true,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", currentUser.id);
+
+      if (error) return alert(error.message);
+
+      await loadProfile();
+      await loadAllData();
+      renderHome();
+    }
+
+    async function signOut() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      events = [];
+      promptsByEvent = {};
+      answersByPrompt = {};
+      commentsByEvent = {};
+      chatByEvent = {};
+      joinRequestsByEvent = {};
+      renderLogin();
+    }
+
+    async function loadAllData() {
+      const { data: eventsData, error: eventsErr } = await supabaseClient
+        .from("events")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (eventsErr) {
+        events = [];
+        return;
+      }
+
+      events = eventsData || [];
+      promptsByEvent = {};
+      answersByPrompt = {};
+      commentsByEvent = {};
+      chatByEvent = {};
+      joinRequestsByEvent = {};
+
+      const eventIds = events.map(e => e.id);
+      if (!eventIds.length) return;
+
+      const { data: promptsData } = await supabaseClient
+        .from("prompts")
+        .select("*")
+        .in("event_id", eventIds)
+        .order("sort_order", { ascending: true });
+
+      (promptsData || []).forEach(p => {
+        if (!promptsByEvent[p.event_id]) promptsByEvent[p.event_id] = [];
+        promptsByEvent[p.event_id].push(p);
+      });
+
+      const promptIds = (promptsData || []).map(p => p.id);
+
+      if (promptIds.length) {
+        const { data: answersData } = await supabaseClient
+          .from("prompt_answers")
+          .select("*")
+          .in("prompt_id", promptIds)
+          .order("created_at", { ascending: true });
+
+        (answersData || []).forEach(a => {
+          if (!answersByPrompt[a.prompt_id]) answersByPrompt[a.prompt_id] = [];
+          answersByPrompt[a.prompt_id].push(a);
+        });
+      }
+
+      const { data: commentsData } = await supabaseClient
+        .from("comments")
+        .select("*")
+        .in("event_id", eventIds)
+        .order("created_at", { ascending: true });
+
+      (commentsData || []).forEach(c => {
+        if (!commentsByEvent[c.event_id]) commentsByEvent[c.event_id] = [];
+        commentsByEvent[c.event_id].push(c);
+      });
+
+      const { data: chatData } = await supabaseClient
+        .from("chat_messages")
+        .select("*")
+        .in("event_id", eventIds)
+        .order("created_at", { ascending: true });
+
+      (chatData || []).forEach(m => {
+        if (!chatByEvent[m.event_id]) chatByEvent[m.event_id] = [];
+        chatByEvent[m.event_id].push(m);
+      });
+
+      const { data: requestsData } = await supabaseClient
+        .from("join_requests")
+        .select("*")
+        .in("event_id", eventIds)
+        .order("created_at", { ascending: true });
+
+      (requestsData || []).forEach(r => {
+        if (!joinRequestsByEvent[r.event_id]) joinRequestsByEvent[r.event_id] = [];
+        joinRequestsByEvent[r.event_id].push(r);
+      });
+    }
+
+    function getTopPicks(eventId) {
+      const picks = [];
+      const prompts = promptsByEvent[eventId] || [];
+
+      prompts.forEach(prompt => {
+        (answersByPrompt[prompt.id] || []).forEach(answer => {
+          picks.push({
+            type: prompt.question,
+            name: answer.user_name,
+            text: answer.answer,
+            likes: answer.likes_count || 0,
+            mood: answer.mood || ""
+          });
+        });
+      });
+
+      (commentsByEvent[eventId] || []).forEach(comment => {
+        picks.push({
+          type: "Guest comment",
+          name: comment.user_name,
+          text: comment.comment,
+          likes: comment.likes_count || 0,
+          mood: comment.mood || ""
+        });
+      });
+
+      return picks.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
     }
 
     function parseDateForCard(dateText) {
@@ -591,62 +806,93 @@
     }
 
     function getApprovedGuests(event) {
-      return (event.joinRequests || []).filter(r => r.status === "approved");
+      return (joinRequestsByEvent[event.id] || []).filter(r => r.status === "approved");
     }
 
     function getInitials(name) {
-      const parts = String(name || "G").trim().split(/\s+/).slice(0, 2);
+      const parts = String(name || "G").trim().split(/\\s+/).slice(0,2);
       return parts.map(p => p[0]?.toUpperCase() || "").join("") || "G";
     }
 
     function renderAvatarRow(event) {
-      const approved = getApprovedGuests(event).slice(0, 4);
-      if (!approved.length) {
-        return `<div class="small-text" style="margin-top:12px;">No approved guests yet.</div>`;
-      }
-
+      const approved = getApprovedGuests(event).slice(0,4);
+      if (!approved.length) return `<div class="small-text" style="margin-top:12px;">No approved guests yet.</div>`;
       return `
         <div class="avatar-row">
           <div class="avatar-stack">
-            ${approved.map(person => `<div class="avatar">${escapeHtml(getInitials(person.name))}</div>`).join("")}
+            ${approved.map(person => `<div class="avatar">${escapeHtml(getInitials(person.guest_name))}</div>`).join("")}
           </div>
           <div class="small-text">${approved.length} guest${approved.length === 1 ? "" : "s"} joining</div>
         </div>
       `;
     }
 
-    function getTopPicks(event) {
-      const picks = [];
-      (event.prompts || []).forEach(prompt => {
-        (prompt.answers || []).forEach(answer => {
-          picks.push({
-            type: prompt.question,
-            name: answer.name,
-            text: answer.text,
-            likes: answer.likes || 0,
-            mood: answer.mood || ""
-          });
-        });
-      });
+    function renderLogin() {
+      setActiveTab("home");
+      document.getElementById("app").innerHTML = `
+        <div class="hero">
+          <div class="hero-title">A soft place for meaningful gatherings.</div>
+          <div class="hero-copy">Sign in to create events, invite people, and make connection feel intentional.</div>
+        </div>
 
-      (event.comments || []).forEach(comment => {
-        picks.push({
-          type: "Guest comment",
-          name: comment.name,
-          text: comment.text,
-          likes: comment.likes || 0,
-          mood: comment.mood || ""
-        });
-      });
+        <div class="card">
+          <div class="section-title" style="margin-top:0;">Join Nest</div>
+          <div class="section-note">Enter your email to receive a magic login link.</div>
+          <input id="emailInput" placeholder="you@example.com" />
+          <button onclick="sendMagicLink()">Send Magic Link</button>
+        </div>
+      `;
+    }
 
-      return picks.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
+    function renderCompleteProfile() {
+      setActiveTab("home");
+      document.getElementById("app").innerHTML = `
+        <div class="card">
+          <div class="section-title" style="margin-top:0;">Complete your profile</div>
+          <div class="section-note">A few details help keep Nest warm, thoughtful, and real.</div>
+
+          <input id="fullName" placeholder="Full name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+          <input id="profilePhone" placeholder="Phone number (optional)" value="${escapeHtml(currentProfile?.phone_number || "")}" />
+          <input id="instagramHandle" placeholder="Instagram handle" value="${escapeHtml(currentProfile?.instagram_handle || "")}" />
+          <input id="linkedinUrl" placeholder="LinkedIn profile URL" value="${escapeHtml(currentProfile?.linkedin_url || "")}" />
+
+          <button onclick="saveProfile()">Save Profile</button>
+        </div>
+      `;
+    }
+
+    function renderAuthCard() {
+      if (!currentUser || !currentProfile) {
+        return `
+          <div class="card">
+            <div class="section-title" style="margin-top:0;">Not signed in</div>
+            <div class="section-note">Sign in to create gatherings, chat, and join events.</div>
+            <button onclick="renderLogin()">Sign In</button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card">
+          <div class="section-title" style="margin-top:0;">Welcome, ${escapeHtml(currentProfile.full_name || "Guest")} ✨</div>
+          <div class="small-text">${escapeHtml(currentUser.email || "")}</div>
+          <div class="small-text">${escapeHtml(currentProfile.instagram_handle || "")}</div>
+          <div class="small-text">${escapeHtml(currentProfile.linkedin_url || "")}</div>
+          <button class="secondary-btn" onclick="signOut()">Sign Out</button>
+        </div>
+      `;
     }
 
     function renderHome() {
       setActiveTab("home");
 
-      let html = renderHero();
+      let html = renderAuthCard();
       html += `
+        <div class="hero">
+          <div class="hero-title">Create evenings people want to remember.</div>
+          <div class="hero-copy">Plan cozy gatherings, collect ideas, and make your people feel at home.</div>
+        </div>
+
         <div class="screen-title">Upcoming gatherings</div>
         <div class="screen-subtitle">Soft plans, warm energy, and thoughtful connection.</div>
       `;
@@ -655,11 +901,11 @@
         html += `<div class="empty">No gatherings yet — create one ✨</div>`;
       } else {
         events.forEach((event, index) => {
-          const dateCard = parseDateForCard(event.date);
+          const dateCard = parseDateForCard(event.event_date);
           html += `
             <div class="card">
-              <div class="event-grid">
-                <div class="date-card">
+              <div class="event-layout">
+                <div class="date-box">
                   <div class="date-month">${escapeHtml(dateCard.month)}</div>
                   <div class="date-day">${escapeHtml(dateCard.day)}</div>
                   <div class="date-weekday">${escapeHtml(dateCard.weekday)}</div>
@@ -671,8 +917,8 @@
 
                   <div class="meta-row">
                     <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
-                    ${event.eventMood ? `<div class="pill">☁️ ${escapeHtml(event.eventMood)}</div>` : ""}
-                    ${event.time ? `<div class="pill">🕒 ${escapeHtml(event.time)}</div>` : ""}
+                    ${event.event_mood ? `<div class="pill">☁️ ${escapeHtml(event.event_mood)}</div>` : ""}
+                    ${event.event_time ? `<div class="pill">🕒 ${escapeHtml(event.event_time)}</div>` : ""}
                     ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
                   </div>
 
@@ -692,7 +938,16 @@
     function renderCreate() {
       setActiveTab("create");
 
+      if (!currentUser || !profileIsComplete(currentProfile)) {
+        document.getElementById("app").innerHTML = `
+          ${renderAuthCard()}
+          <div class="empty">Sign in and complete your profile first to create a gathering ✨</div>
+        `;
+        return;
+      }
+
       document.getElementById("app").innerHTML = `
+        ${renderAuthCard()}
         <div class="screen-title">Create a gathering</div>
         <div class="screen-subtitle">Shape the mood, add the details, and make it feel inviting.</div>
 
@@ -733,32 +988,45 @@
 
     function renderProfile() {
       setActiveTab("profile");
+      const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
 
-      document.getElementById("app").innerHTML = `
+      let html = renderAuthCard();
+      html += `
         <div class="screen-title">Your space</div>
         <div class="screen-subtitle">A quiet place to manage your gatherings and reset things when needed.</div>
+      `;
 
-        <div class="card">
-          <div style="font-size:18px; font-weight:700;">${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</div>
-          <div class="section-note">Everything is stored locally on this device for now.</div>
-          <button class="danger-btn" onclick="resetAllEvents()">Delete All Gatherings</button>
-        </div>
+      if (isAdmin) {
+        html += `
+          <div class="card">
+            <div style="font-size:18px; font-weight:700;">${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</div>
+            <div class="section-note">Admin tools are enabled for your account.</div>
+            <button class="danger-btn" onclick="deleteAllEvents()">Delete All Gatherings</button>
+          </div>
+        `;
+      }
 
+      html += `
         <div class="card">
           <div class="section-title" style="margin-top:0;">Manage gatherings</div>
           ${
             !events.length
               ? `<div class="small-text">No gatherings to manage yet.</div>`
               : events.map((event, index) => `
-                  <div class="prompt-box">
+                  <div class="group-box">
                     <div class="prompt-question">${escapeHtml(event.title)}</div>
                     <div class="small-text">${escapeHtml(event.description || "")}</div>
-                    <button class="danger-btn" onclick="deleteEvent(${index})">Delete This Gathering</button>
+                    ${(currentUser && (currentUser.email === event.host_email || isAdmin))
+                      ? `<button class="danger-btn" onclick="deleteEvent('${event.id}')">Delete This Gathering</button>`
+                      : `<div class="small-text">Only the host can delete this gathering.</div>`
+                    }
                   </div>
                 `).join("")
           }
         </div>
       `;
+
+      document.getElementById("app").innerHTML = html;
     }
 
     function openEvent(index, subtab = "chat") {
@@ -766,9 +1034,16 @@
       if (!event) return renderHome();
 
       setActiveTab("home");
-      const topPicks = getTopPicks(event);
+      const topPicks = getTopPicks(event.id);
+      const prompts = promptsByEvent[event.id] || [];
+      const comments = commentsByEvent[event.id] || [];
+      const chat = chatByEvent[event.id] || [];
+      const requests = joinRequestsByEvent[event.id] || [];
+      const isHost = currentUser && currentUser.email === event.host_email;
+      const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
 
-      let html = `
+      let html = renderAuthCard();
+      html += `
         <div class="card">
           <button class="secondary-btn" onclick="renderHome()">← Back to Home</button>
 
@@ -777,17 +1052,17 @@
 
           <div class="meta-row">
             <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
-            ${event.eventMood ? `<div class="pill">☁️ ${escapeHtml(event.eventMood)}</div>` : ""}
-            ${event.date ? `<div class="pill">📅 ${escapeHtml(event.date)}</div>` : ""}
-            ${event.time ? `<div class="pill">🕒 ${escapeHtml(event.time)}</div>` : ""}
+            ${event.event_mood ? `<div class="pill">☁️ ${escapeHtml(event.event_mood)}</div>` : ""}
+            ${event.event_date ? `<div class="pill">📅 ${escapeHtml(event.event_date)}</div>` : ""}
+            ${event.event_time ? `<div class="pill">🕒 ${escapeHtml(event.event_time)}</div>` : ""}
             ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
           </div>
 
           ${renderAvatarRow(event)}
 
-          ${event.hostNote ? `
+          ${event.host_note ? `
             <div class="section-title">From the host</div>
-            <div class="host-note">${escapeHtml(event.hostNote)}</div>
+            <div class="host-note">${escapeHtml(event.host_note)}</div>
           ` : ""}
 
           <div class="subtabs">
@@ -804,24 +1079,26 @@
 
           <div class="chat-wrap">
             ${
-              !event.chatMessages?.length
+              !chat.length
                 ? `<div class="small-text">No messages yet — start the conversation ✨</div>`
-                : event.chatMessages.map(msg => `
-                    <div class="chat-message ${msg.isSelf ? "self" : "other"}">
-                      ${!msg.isSelf ? `<div class="chat-name">${escapeHtml(msg.name)}</div>` : ""}
-                      <div>${escapeHtml(msg.text)}</div>
-                      <div class="chat-time">${escapeHtml(formatTime(msg.createdAt))}</div>
+                : chat.map(msg => `
+                    <div class="chat-bubble ${msg.is_self ? "self" : "other"}">
+                      ${!msg.is_self ? `<div class="chat-name">${escapeHtml(msg.user_name)}</div>` : ""}
+                      <div>${escapeHtml(msg.message)}</div>
+                      <div class="chat-time">${escapeHtml(formatTime(msg.created_at))}</div>
                     </div>
                   `).join("")
             }
           </div>
 
-          <input id="chatName" placeholder="Your name" />
-          <textarea id="chatMessage" placeholder="Type a message..."></textarea>
-          <div class="row">
-            <button class="secondary-btn" onclick="sendMessage(${index}, false)">Send as Guest</button>
-            <button onclick="sendMessage(${index}, true)">Send as You</button>
-          </div>
+          ${currentUser ? `
+            <input id="chatName" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+            <textarea id="chatMessage" placeholder="Type a message..."></textarea>
+            <div class="row">
+              <button class="secondary-btn" onclick="sendMessage('${event.id}', false, ${index})">Send as Guest</button>
+              <button onclick="sendMessage('${event.id}', true, ${index})">Send as You</button>
+            </div>
+          ` : `<div class="small-text">Sign in to chat.</div>`}
         `;
       }
 
@@ -832,7 +1109,7 @@
             !topPicks.length
               ? `<div class="small-text">No suggestions yet — be the first ✨</div>`
               : topPicks.map(item => `
-                  <div class="top-pick-item">
+                  <div class="top-pick">
                     <div class="top-pick-title">${escapeHtml(item.text)}</div>
                     <div class="top-pick-meta">
                       ${escapeHtml(item.name)} • ${escapeHtml(item.type)}${item.mood ? ` • ${escapeHtml(item.mood)}` : ""} • ❤️ ${item.likes}
@@ -844,31 +1121,34 @@
           <div class="section-title">Prompts for the evening</div>
         `;
 
-        (event.prompts || []).forEach((prompt, promptIndex) => {
+        prompts.forEach((prompt, promptIndex) => {
+          const answers = answersByPrompt[prompt.id] || [];
           html += `
-            <div class="prompt-box">
+            <div class="group-box">
               <div class="prompt-question">${escapeHtml(prompt.question)}</div>
 
-              ${(prompt.answers || []).map((answer, answerIndex) => `
-                <div class="suggestion-item">
-                  <div class="item-line"><strong>${escapeHtml(answer.name)}</strong>: ${escapeHtml(answer.text)}</div>
+              ${answers.map(answer => `
+                <div class="item">
+                  <div class="item-line"><strong>${escapeHtml(answer.user_name)}</strong>: ${escapeHtml(answer.answer)}</div>
                   <div class="row">
                     ${answer.mood ? `<span class="pill">${escapeHtml(answer.mood)}</span>` : ""}
-                    <button class="like-btn" onclick="likeAnswer(${index}, ${promptIndex}, ${answerIndex})">❤️ ${answer.likes || 0}</button>
+                    <button class="like-btn" onclick="likeAnswer('${answer.id}', ${index})">❤️ ${answer.likes_count || 0}</button>
                   </div>
                 </div>
               `).join("")}
 
-              <input id="answerName-${promptIndex}" placeholder="Your name" />
-              <select id="answerMood-${promptIndex}">
-                <option>Chill</option>
-                <option>Fun</option>
-                <option>Deep talk</option>
-                <option>Cozy</option>
-                <option>Party</option>
-              </select>
-              <input id="answerText-${promptIndex}" placeholder="Add your idea..." />
-              <button class="secondary-btn" onclick="addAnswer(${index}, ${promptIndex})">Add Answer</button>
+              ${currentUser ? `
+                <input id="answerName-${promptIndex}" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+                <select id="answerMood-${promptIndex}">
+                  <option>Chill</option>
+                  <option>Fun</option>
+                  <option>Deep talk</option>
+                  <option>Cozy</option>
+                  <option>Party</option>
+                </select>
+                <input id="answerText-${promptIndex}" placeholder="Add your idea..." />
+                <button class="secondary-btn" onclick="addAnswer('${prompt.id}', ${promptIndex}, ${index})">Add Answer</button>
+              ` : `<div class="small-text">Sign in to add ideas.</div>`}
             </div>
           `;
         });
@@ -876,26 +1156,28 @@
         html += `
           <div class="section-title">Add your own question or comment</div>
 
-          ${(event.comments || []).map((comment, commentIndex) => `
-            <div class="suggestion-item">
-              <div class="item-line"><strong>${escapeHtml(comment.name)}</strong>: ${escapeHtml(comment.text)}</div>
+          ${comments.map(comment => `
+            <div class="item">
+              <div class="item-line"><strong>${escapeHtml(comment.user_name)}</strong>: ${escapeHtml(comment.comment)}</div>
               <div class="row">
                 ${comment.mood ? `<span class="pill">${escapeHtml(comment.mood)}</span>` : ""}
-                <button class="like-btn" onclick="likeComment(${index}, ${commentIndex})">❤️ ${comment.likes || 0}</button>
+                <button class="like-btn" onclick="likeComment('${comment.id}', ${index})">❤️ ${comment.likes_count || 0}</button>
               </div>
             </div>
           `).join("")}
 
-          <input id="commentName" placeholder="Your name" />
-          <select id="commentMood">
-            <option>Chill</option>
-            <option>Fun</option>
-            <option>Deep talk</option>
-            <option>Cozy</option>
-            <option>Party</option>
-          </select>
-          <textarea id="commentText" placeholder="Share a thought, suggestion, or question..."></textarea>
-          <button class="secondary-btn" onclick="addComment(${index})">Add Comment</button>
+          ${currentUser ? `
+            <input id="commentName" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+            <select id="commentMood">
+              <option>Chill</option>
+              <option>Fun</option>
+              <option>Deep talk</option>
+              <option>Cozy</option>
+              <option>Party</option>
+            </select>
+            <textarea id="commentText" placeholder="Share a thought, suggestion, or question..."></textarea>
+            <button class="secondary-btn" onclick="addComment('${event.id}', ${index})">Add Comment</button>
+          ` : `<div class="small-text">Sign in to add comments.</div>`}
         `;
       }
 
@@ -904,38 +1186,40 @@
           <div class="section-title">People</div>
           <div class="small-text">Join requests and attendee list for this gathering.</div>
 
-          <div class="people-item">
+          <div class="group-box">
             <div class="prompt-question">Join requests</div>
             ${
-              !event.joinRequests?.length
+              !requests.length
                 ? `<div class="small-text">No join requests yet.</div>`
-                : event.joinRequests.map((req, reqIndex) => `
-                    <div class="suggestion-item">
-                      <div class="item-line"><strong>${escapeHtml(req.name)}</strong></div>
+                : requests.map(req => `
+                    <div class="item">
+                      <div class="item-line"><strong>${escapeHtml(req.guest_name)}</strong></div>
                       <div class="small-text">Status: ${escapeHtml(req.status)}</div>
-                      <div class="row">
-                        <button class="secondary-btn tiny-btn" onclick="updateJoinRequest(${index}, ${reqIndex}, 'approved')">Approve</button>
-                        <button class="tiny-btn danger-btn" onclick="updateJoinRequest(${index}, ${reqIndex}, 'declined')">Decline</button>
-                      </div>
+                      ${(isHost || isAdmin) ? `
+                        <div class="row">
+                          <button class="secondary-btn tiny-btn" onclick="updateJoinRequest('${req.id}', 'approved', ${index})">Approve</button>
+                          <button class="tiny-btn danger-btn" onclick="updateJoinRequest('${req.id}', 'declined', ${index})">Decline</button>
+                        </div>
+                      ` : ""}
                     </div>
                   `).join("")
             }
 
-            <input id="joinName" placeholder="Your name to request joining" />
-            <button onclick="joinEvent(${index})">Request to Join</button>
+            ${currentUser ? `
+              <input id="joinName" placeholder="Your name to request joining" value="${escapeHtml(currentProfile?.full_name || "")}" />
+              <button onclick="joinEvent('${event.id}', ${index})">Request to Join</button>
+            ` : `<div class="small-text">Sign in to request joining.</div>`}
           </div>
 
-          <div class="people-item">
+          <div class="group-box">
             <div class="prompt-question">Approved guests</div>
             ${
-              !getApprovedGuests(event).length
+              !requests.filter(r => r.status === "approved").length
                 ? `<div class="small-text">No approved guests yet.</div>`
-                : getApprovedGuests(event)
-                    .map(person => `
-                      <div class="suggestion-item">
-                        <div class="item-line"><strong>${escapeHtml(person.name)}</strong></div>
-                      </div>
-                    `).join("")
+                : requests
+                    .filter(r => r.status === "approved")
+                    .map(r => `<div class="item"><div class="item-line"><strong>${escapeHtml(r.guest_name)}</strong></div></div>`)
+                    .join("")
             }
           </div>
         `;
@@ -950,143 +1234,190 @@
       document.getElementById("app").innerHTML = html;
     }
 
-    function createEvent() {
+    async function createEvent() {
       const title = document.getElementById("title").value.trim();
       const vibe = document.getElementById("vibe").value.trim();
-      const eventMood = document.getElementById("eventMood").value;
-      const date = document.getElementById("date").value.trim();
-      const time = document.getElementById("time").value.trim();
-      const location = document.getElementById("location").value.trim();
       const description = document.getElementById("desc").value.trim();
       const hostNote = document.getElementById("hostNote").value.trim();
+      const eventMood = document.getElementById("eventMood").value;
+      const eventDate = document.getElementById("date").value.trim();
+      const eventTime = document.getElementById("time").value.trim();
+      const location = document.getElementById("location").value.trim();
 
-      if (!title) {
-        alert("Please add a gathering name ✨");
-        return;
-      }
+      if (!title) return alert("Please add a gathering name ✨");
 
-      const event = {
-        title,
-        vibe: vibe || "Meaningful",
-        eventMood: eventMood || "Chill",
-        date,
-        time,
-        location,
-        description: description || "A warm space to connect.",
-        hostNote: hostNote || "",
-        prompts: defaultPromptQuestions().map(question => ({
-          question,
-          answers: []
-        })),
-        comments: [],
-        chatMessages: [],
-        joinRequests: []
-      };
+      const { data: inserted, error } = await supabaseClient
+        .from("events")
+        .insert([{
+          title,
+          vibe: vibe || "Meaningful",
+          event_mood: eventMood || "Chill",
+          event_date: eventDate,
+          event_time: eventTime,
+          location,
+          description: description || "A warm space to connect.",
+          host_note: hostNote || "",
+          host_email: currentUser.email
+        }])
+        .select()
+        .single();
 
-      events.unshift(event);
-      save();
+      if (error) return alert(error.message);
+
+      const prompts = defaultPromptQuestions().map((q, i) => ({
+        event_id: inserted.id,
+        question: q,
+        sort_order: i
+      }));
+
+      const { error: promptError } = await supabaseClient.from("prompts").insert(prompts);
+      if (promptError) return alert(promptError.message);
+
+      await loadAllData();
       alert("Gathering created ✨");
       renderHome();
     }
 
-    function addAnswer(eventIndex, promptIndex) {
-      const name = document.getElementById(`answerName-${promptIndex}`).value.trim() || "Guest";
+    async function addAnswer(promptId, promptIndex, eventIndex) {
+      const name = document.getElementById(`answerName-${promptIndex}`).value.trim() || currentProfile?.full_name || "Guest";
       const mood = document.getElementById(`answerMood-${promptIndex}`).value;
       const text = document.getElementById(`answerText-${promptIndex}`).value.trim();
       if (!text) return;
 
-      events[eventIndex].prompts[promptIndex].answers.push({
-        name,
+      const { error } = await supabaseClient.from("prompt_answers").insert([{
+        prompt_id: promptId,
+        user_name: name,
+        user_email: currentUser.email,
         mood,
-        text,
-        likes: 0
-      });
+        answer: text
+      }]);
 
-      save();
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "ideas");
     }
 
-    function addComment(eventIndex) {
-      const name = document.getElementById("commentName").value.trim() || "Guest";
+    async function addComment(eventId, eventIndex) {
+      const name = document.getElementById("commentName").value.trim() || currentProfile?.full_name || "Guest";
       const mood = document.getElementById("commentMood").value;
       const text = document.getElementById("commentText").value.trim();
       if (!text) return;
 
-      events[eventIndex].comments.push({
-        name,
+      const { error } = await supabaseClient.from("comments").insert([{
+        event_id: eventId,
+        user_name: name,
+        user_email: currentUser.email,
         mood,
-        text,
-        likes: 0
-      });
+        comment: text
+      }]);
 
-      save();
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "ideas");
     }
 
-    function likeAnswer(eventIndex, promptIndex, answerIndex) {
-      events[eventIndex].prompts[promptIndex].answers[answerIndex].likes += 1;
-      save();
+    async function likeAnswer(answerId, eventIndex) {
+      const target = Object.values(answersByPrompt).flat().find(a => a.id === answerId);
+      if (!target) return;
+
+      const { error } = await supabaseClient
+        .from("prompt_answers")
+        .update({ likes_count: (target.likes_count || 0) + 1 })
+        .eq("id", answerId);
+
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "ideas");
     }
 
-    function likeComment(eventIndex, commentIndex) {
-      events[eventIndex].comments[commentIndex].likes += 1;
-      save();
+    async function likeComment(commentId, eventIndex) {
+      const target = Object.values(commentsByEvent).flat().find(c => c.id === commentId);
+      if (!target) return;
+
+      const { error } = await supabaseClient
+        .from("comments")
+        .update({ likes_count: (target.likes_count || 0) + 1 })
+        .eq("id", commentId);
+
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "ideas");
     }
 
-    function sendMessage(eventIndex, isSelf) {
-      const name = document.getElementById("chatName").value.trim() || (isSelf ? "You" : "Guest");
+    async function sendMessage(eventId, isSelf, eventIndex) {
       const text = document.getElementById("chatMessage").value.trim();
+      const name = document.getElementById("chatName").value.trim() || currentProfile?.full_name || (isSelf ? "You" : "Guest");
       if (!text) return;
 
-      events[eventIndex].chatMessages.push({
-        name,
-        text,
-        isSelf,
-        createdAt: new Date().toISOString()
-      });
+      const { error } = await supabaseClient.from("chat_messages").insert([{
+        event_id: eventId,
+        user_name: name,
+        user_email: currentUser.email,
+        is_self: !!isSelf,
+        message: text
+      }]);
 
-      save();
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "chat");
     }
 
-    function joinEvent(eventIndex) {
-      const name = document.getElementById("joinName").value.trim();
-      if (!name) {
-        alert("Please add your name first ✨");
-        return;
-      }
+    async function joinEvent(eventId, eventIndex) {
+      const name = document.getElementById("joinName").value.trim() || currentProfile?.full_name;
+      if (!name) return alert("Please add your name first ✨");
 
-      events[eventIndex].joinRequests.push({
-        name,
-        status: "pending"
-      });
+      const { error } = await supabaseClient.from("join_requests").insert([{
+        event_id: eventId,
+        guest_name: name,
+        guest_email: currentUser.email
+      }]);
 
-      save();
+      if (error) return alert(error.message);
+
       alert("Request sent 💛");
+      await loadAllData();
       openEvent(eventIndex, "people");
     }
 
-    function updateJoinRequest(eventIndex, requestIndex, status) {
-      events[eventIndex].joinRequests[requestIndex].status = status;
-      save();
+    async function updateJoinRequest(requestId, status, eventIndex) {
+      const { error } = await supabaseClient
+        .from("join_requests")
+        .update({ status })
+        .eq("id", requestId);
+
+      if (error) return alert(error.message);
+
+      await loadAllData();
       openEvent(eventIndex, "people");
     }
 
-    function deleteEvent(index) {
+    async function deleteEvent(eventId) {
       const confirmed = confirm("Delete this gathering?");
       if (!confirmed) return;
-      events.splice(index, 1);
-      save();
+
+      const { error } = await supabaseClient.from("events").delete().eq("id", eventId);
+      if (error) return alert(error.message);
+
+      await loadAllData();
       renderProfile();
     }
 
-    function resetAllEvents() {
+    async function deleteAllEvents() {
       const confirmed = confirm("Delete all gatherings?");
       if (!confirmed) return;
-      events = [];
-      save();
+
+      const ids = events.map(e => e.id);
+      if (!ids.length) return;
+
+      const { error } = await supabaseClient.from("events").delete().in("id", ids);
+      if (error) return alert(error.message);
+
+      await loadAllData();
       renderHome();
     }
 
@@ -1094,19 +1425,18 @@
       const event = events[eventIndex];
       if (!event) return;
 
-      const topPicks = getTopPicks(event);
+      const topPicks = getTopPicks(event.id);
+      const chat = chatByEvent[event.id] || [];
 
       let summary = `${event.title}\n`;
       summary += `${event.description || ""}\n`;
-      if (event.date) summary += `Date: ${event.date}\n`;
-      if (event.time) summary += `Time: ${event.time}\n`;
+      if (event.event_date) summary += `Date: ${event.event_date}\n`;
+      if (event.event_time) summary += `Time: ${event.event_time}\n`;
       if (event.location) summary += `Location: ${event.location}\n`;
       summary += `Vibe: ${event.vibe || "Meaningful"}\n`;
-      summary += `Mood: ${event.eventMood || "Chill"}\n\n`;
+      summary += `Mood: ${event.event_mood || "Chill"}\n\n`;
 
-      if (event.hostNote) {
-        summary += `Host note:\n${event.hostNote}\n\n`;
-      }
+      if (event.host_note) summary += `Host note:\n${event.host_note}\n\n`;
 
       summary += `Top picks:\n`;
       if (!topPicks.length) {
@@ -1118,11 +1448,11 @@
       }
 
       summary += `\nChat messages:\n`;
-      if (!event.chatMessages.length) {
+      if (!chat.length) {
         summary += `- No messages yet\n`;
       } else {
-        event.chatMessages.forEach(msg => {
-          summary += `- ${msg.name}: ${msg.text}\n`;
+        chat.forEach(msg => {
+          summary += `- ${msg.user_name}: ${msg.message}\n`;
         });
       }
 
@@ -1131,11 +1461,48 @@
         .catch(() => alert("Copy didn’t work automatically."));
     }
 
+    function routeAfterAuth() {
+      if (!profileIsComplete(currentProfile)) {
+        renderCompleteProfile();
+      } else {
+        renderHome();
+      }
+    }
+
+    async function bootstrap() {
+      const { data } = await supabaseClient.auth.getSession();
+      currentUser = data.session?.user || null;
+
+      supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+        currentUser = session?.user || null;
+        if (!currentUser) {
+          currentProfile = null;
+          renderLogin();
+          return;
+        }
+
+        await ensureProfileRow();
+        await loadProfile();
+        await loadAllData();
+        routeAfterAuth();
+      });
+
+      if (!currentUser) {
+        renderLogin();
+        return;
+      }
+
+      await ensureProfileRow();
+      await loadProfile();
+      await loadAllData();
+      routeAfterAuth();
+    }
+
     document.getElementById("homeTab").addEventListener("click", renderHome);
     document.getElementById("createTab").addEventListener("click", renderCreate);
     document.getElementById("profileTab").addEventListener("click", renderProfile);
 
-    renderHome();
+    bootstrap();
   </script>
 </body>
 </html>
