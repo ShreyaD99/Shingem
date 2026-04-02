@@ -97,3 +97,10 @@ function resetApp() {
 }
 
 loadGatherings();
+
+<header style="background:#111; color:white; padding:20px; text-align:center;">
+  <h1 style="margin:0; font-size:22px;">Nest ✨</h1>
+  <p style="margin:5px 0 0; font-size:13px; opacity:0.8;">
+    A place to build your chosen family
+  </p>
+</header>
