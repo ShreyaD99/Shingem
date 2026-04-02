@@ -10,18 +10,15 @@
       --card: rgba(255, 255, 255, 0.86);
       --text: #231f1c;
       --text-soft: #6d655f;
-      --accent: #dcc6b2;
-      --accent-2: #f2e7dc;
       --pill: #f5eee7;
       --border: rgba(120, 100, 82, 0.10);
       --shadow: 0 10px 30px rgba(70, 54, 42, 0.08);
       --shadow-soft: 0 6px 18px rgba(70, 54, 42, 0.05);
-      --dark: #1d1a18;
-      --danger: #9f4b4b;
-      --like: #c86d7a;
       --gold: #b9925c;
+      --like: #c86d7a;
       --bubble-self: #efe0d1;
       --bubble-other: #ffffff;
+      --danger: #9f4b4b;
     }
 
     * {
@@ -159,7 +156,7 @@
       font-weight: 700;
     }
 
-    .section-note, .small-text, .small-meta {
+    .section-note, .small-text {
       color: var(--text-soft);
       font-size: 13px;
       line-height: 1.5;
@@ -480,7 +477,6 @@
 
     let currentUser = null;
     let currentProfile = null;
-
     let events = [];
     let promptsByEvent = {};
     let answersByPrompt = {};
@@ -507,7 +503,6 @@
       document.getElementById("homeTab").classList.remove("active");
       document.getElementById("createTab").classList.remove("active");
       document.getElementById("profileTab").classList.remove("active");
-
       if (tab === "home") document.getElementById("homeTab").classList.add("active");
       if (tab === "create") document.getElementById("createTab").classList.add("active");
       if (tab === "profile") document.getElementById("profileTab").classList.add("active");
@@ -569,7 +564,6 @@
           linkedin_url: "",
           profile_completed: false
         }]);
-
         if (error) alert(error.message);
       }
     }
@@ -586,11 +580,7 @@
         .eq("id", currentUser.id)
         .single();
 
-      if (error) {
-        alert(error.message);
-        return;
-      }
-
+      if (error) return alert(error.message);
       currentProfile = data;
     }
 
@@ -824,13 +814,10 @@
       setActiveTab("home");
 
       let html = renderAuthCard();
-
       html += `
         <div class="hero-card">
           <div class="hero-title">Create evenings people want to remember.</div>
-          <div class="hero-copy">
-            Gather ideas, shape the vibe, and plan intentional moments that feel warm, thoughtful, and easy.
-          </div>
+          <div class="hero-copy">Gather ideas, shape the vibe, and plan intentional moments that feel warm, thoughtful, and easy.</div>
         </div>
 
         <div class="screen-title">Upcoming gatherings</div>
@@ -876,7 +863,6 @@
 
       document.getElementById("app").innerHTML = `
         ${renderAuthCard()}
-
         <div class="screen-title">Create a gathering</div>
         <div class="screen-subtitle">Set the tone, shape the mood, and add the essentials beautifully.</div>
 
@@ -1215,7 +1201,6 @@
       const name = document.getElementById(`answerName-${promptIndex}`).value.trim() || currentProfile?.full_name || "Guest";
       const mood = document.getElementById(`answerMood-${promptIndex}`).value;
       const text = document.getElementById(`answerText-${promptIndex}`).value.trim();
-
       if (!text) return;
 
       const { error } = await supabaseClient.from("prompt_answers").insert([{
@@ -1236,7 +1221,6 @@
       const name = document.getElementById("commentName").value.trim() || currentProfile?.full_name || "Guest";
       const mood = document.getElementById("commentMood").value;
       const text = document.getElementById("commentText").value.trim();
-
       if (!text) return;
 
       const { error } = await supabaseClient.from("comments").insert([{
@@ -1286,7 +1270,6 @@
     async function sendMessage(eventId, isSelf, eventIndex) {
       const text = document.getElementById("chatMessage").value.trim();
       const name = document.getElementById("chatName").value.trim() || currentProfile?.full_name || (isSelf ? "You" : "Guest");
-
       if (!text) return;
 
       const { error } = await supabaseClient.from("chat_messages").insert([{
@@ -1372,9 +1355,7 @@
       summary += `Vibe: ${event.vibe || "Meaningful"}\n`;
       summary += `Mood: ${event.event_mood || "Chill"}\n\n`;
 
-      if (event.host_note) {
-        summary += `Host note:\n${event.host_note}\n\n`;
-      }
+      if (event.host_note) summary += `Host note:\n${event.host_note}\n\n`;
 
       summary += `Top picks:\n`;
       if (topPicks.length === 0) {
@@ -1413,11 +1394,13 @@
 
       supabaseClient.auth.onAuthStateChange(async (_event, session) => {
         currentUser = session?.user || null;
+
         if (!currentUser) {
           currentProfile = null;
           renderLogin();
           return;
         }
+
         await ensureProfileRow();
         await loadProfile();
         await loadAllData();
