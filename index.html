@@ -1,577 +1,907 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://ydxcorkwshehscivneli.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkeGNvcmt3c2hlaHNjaXZuZWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMjgwNTAsImV4cCI6MjA5MDYwNDA1MH0.geVzJYnkfa3HIlaRNBT2bdv13YbxuR6gmFkxZnspY7c";
-  const ADMIN_EMAIL = "prudentshreya@gmail.com";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nest</title>
+  <style>
+    :root {
+      --bg: #fbf7f3;
+      --bg-2: #f5ede5;
+      --card: rgba(255,255,255,0.9);
+      --text: #231f1c;
+      --text-soft: #6d655f;
+      --line: rgba(120,100,82,0.10);
+      --pill: #f5eee7;
+      --accent: #eadbcc;
+      --accent-2: #f1e5d9;
+      --shadow: 0 10px 30px rgba(70,54,42,0.08);
+      --shadow-soft: 0 6px 18px rgba(70,54,42,0.05);
+      --gold: #b9925c;
+      --pink: #c86d7a;
+      --danger: #9f4b4b;
+      --bubble-self: #efe0d1;
+      --bubble-other: #ffffff;
+      --glass: rgba(255,255,255,0.72);
+    }
 
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  let currentUser = null;
-  let currentProfile = null;
-  let events = [];
-  let promptsByEvent = {};
-  let answersByPrompt = {};
-  let commentsByEvent = {};
-  let chatByEvent = {};
-  let joinRequestsByEvent = {};
+    html {
+      scroll-behavior: smooth;
+    }
 
-  function escapeHtml(text) {
-    return String(text ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fffaf5 0%, transparent 35%),
+        radial-gradient(circle at top right, #f7efe7 0%, transparent 30%),
+        linear-gradient(180deg, var(--bg) 0%, #f8f2eb 100%);
+      min-height: 100vh;
+    }
 
-  function formatTime(dateString) {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "";
-    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 22px 20px 20px;
+      text-align: center;
+      color: white;
+      background: linear-gradient(135deg, rgba(28,24,22,0.97), rgba(62,48,39,0.92));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 10px 30px rgba(28,24,22,0.18);
+    }
 
-  function setActiveTab(tab) {
-    document.getElementById("homeTab").classList.remove("active");
-    document.getElementById("createTab").classList.remove("active");
-    document.getElementById("profileTab").classList.remove("active");
-    if (tab === "home") document.getElementById("homeTab").classList.add("active");
-    if (tab === "create") document.getElementById("createTab").classList.add("active");
-    if (tab === "profile") document.getElementById("profileTab").classList.add("active");
-  }
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
 
-  function defaultPromptQuestions() {
-    return [
-      "What movie should we watch?",
-      "What game should we play?",
-      "What music should we have in the background?",
-      "What would you love us to talk about?"
-    ];
-  }
+    header p {
+      margin: 7px 0 0;
+      font-size: 13px;
+      opacity: 0.88;
+      letter-spacing: 0.2px;
+    }
 
-  async function sendMagicLink() {
-    const email = document.getElementById("emailInput").value.trim();
-    if (!email) return alert("Please enter your email.");
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 18px 16px 110px;
+    }
 
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: window.location.href
+    .fade-in {
+      animation: fadeIn 0.28s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-card,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .hero-card {
+      padding: 18px;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(249,243,236,0.94) 100%);
+    }
+
+    .card {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .hero-copy,
+    .screen-subtitle,
+    .small-text {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .screen-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 8px 2px 8px;
+    }
+
+    .screen-subtitle {
+      margin: 0 2px 18px;
+    }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .date-card {
+      background: linear-gradient(180deg, #fff 0%, #f7efe7 100%);
+      border: 1px solid rgba(120,100,82,0.08);
+      border-radius: 20px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .date-month {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .date-day {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.05;
+      margin-top: 4px;
+    }
+
+    .date-weekday {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    .event-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .event-description {
+      margin-top: 8px;
+      color: var(--text-soft);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--pill);
+      color: #5f544b;
+      border: 1px solid rgba(120,100,82,0.08);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .section-note {
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: -2px;
+      margin-bottom: 10px;
+    }
+
+    .host-note {
+      background: linear-gradient(180deg, #f8f1ea 0%, #f5ede5 100%);
+      border: 1px solid rgba(185,146,92,0.14);
+      border-left: 4px solid var(--gold);
+      padding: 14px;
+      border-radius: 16px;
+      color: #54483f;
+      line-height: 1.55;
+    }
+
+    .top-pick-item,
+    .suggestion-item,
+    .chat-message,
+    .people-item,
+    .prompt-box {
+      border-radius: 18px;
+    }
+
+    .top-pick-item {
+      background: linear-gradient(180deg, #f7efe7 0%, #f4eadf 100%);
+      border: 1px solid rgba(185,146,92,0.14);
+      padding: 13px 14px;
+      margin-top: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .top-pick-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .top-pick-meta {
+      color: var(--text-soft);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .prompt-box,
+    .people-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(249,244,239,0.94) 100%);
+      border: 1px solid rgba(120,100,82,0.09);
+      padding: 14px;
+      margin-top: 12px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .prompt-question {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .suggestion-item {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid rgba(120,100,82,0.08);
+      padding: 12px;
+      margin-top: 9px;
+      box-shadow: 0 3px 10px rgba(70,54,42,0.03);
+    }
+
+    .item-line {
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .subtabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .subtabs button {
+      width: auto;
+      margin-top: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: #544941;
+      box-shadow: none;
+      border: 1px solid rgba(120,100,82,0.10);
+    }
+
+    .subtabs button.active {
+      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+      color: #40362f;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(120,100,82,0.12);
+      background: rgba(255,255,255,0.94);
+      color: var(--text);
+      border-radius: 15px;
+      padding: 12px 14px;
+      font-size: 14px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+      font-family: inherit;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(185,146,92,0.42);
+      box-shadow: 0 0 0 4px rgba(220,198,178,0.18);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+      background: linear-gradient(135deg, #24201d 0%, #3d322a 100%);
+      color: white;
+      box-shadow: 0 8px 18px rgba(36,32,29,0.18);
+    }
+
+    button:hover {
+      opacity: 0.97;
+    }
+
+    button:active {
+      transform: scale(0.985);
+    }
+
+    .secondary-btn {
+      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+      color: #473d36;
+      box-shadow: 0 8px 18px rgba(141,116,88,0.12);
+    }
+
+    .like-btn, .tiny-btn {
+      width: auto;
+      padding: 8px 12px;
+      margin-top: 0;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 999px;
+      background: white;
+      color: var(--pink);
+      border: 1px solid rgba(200,109,122,0.18);
+      box-shadow: none;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #8f4949 0%, #a34f4f 100%);
+      color: white;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--text-soft);
+      padding: 38px 20px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.7);
+      border: 1px dashed rgba(120,100,82,0.18);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(120,100,82,0.12), transparent);
+      margin: 16px 0;
+    }
+
+    .chat-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .chat-message {
+      max-width: 82%;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-soft);
+      font-size: 14px;
+      line-height: 1.45;
+      border: 1px solid rgba(120,100,82,0.08);
+    }
+
+    .chat-message.other {
+      align-self: flex-start;
+      background: var(--bubble-other);
+      border-top-left-radius: 8px;
+    }
+
+    .chat-message.self {
+      align-self: flex-end;
+      background: var(--bubble-self);
+      border-top-right-radius: 8px;
+    }
+
+    .chat-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #5f544b;
+    }
+
+    .chat-time {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+      text-align: right;
+    }
+
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #f2e6da 0%, #e8d6c4 100%);
+      border: 2px solid white;
+      color: #594e45;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -8px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .avatar:first-child {
+      margin-left: 0;
+    }
+
+    .tabs {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: min(92vw, 520px);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(120,100,82,0.10);
+      border-radius: 22px;
+      box-shadow: 0 18px 40px rgba(70,54,42,0.10);
+      z-index: 30;
+    }
+
+    .tabs button {
+      width: 100%;
+      margin-top: 0;
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: transparent;
+      color: #544941;
+      box-shadow: none;
+      font-weight: 700;
+    }
+
+    .tabs button.active {
+      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+      color: #40362f;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px 14px 110px;
       }
-    });
 
-    if (error) return alert(error.message);
+      .form-grid,
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
 
-    document.getElementById("app").innerHTML = `
-      <div class="card">
-        <div class="section-title" style="margin-top:0;">Check your email ✨</div>
-        <div class="section-note">We sent a magic link to <strong>${escapeHtml(email)}</strong>.</div>
-        <button class="secondary-btn" onclick="renderLogin()">Use another email</button>
-      </div>
-    `;
-  }
+      .date-card {
+        width: 96px;
+      }
 
-  async function ensureProfileRow() {
-    if (!currentUser) return;
+      .event-title {
+        font-size: 18px;
+      }
 
-    const { data: existing } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", currentUser.id)
-      .maybeSingle();
+      .screen-title {
+        font-size: 20px;
+      }
 
-    if (!existing) {
-      const { error } = await supabaseClient.from("profiles").insert([{
-        id: currentUser.id,
-        full_name: "",
-        phone_number: "",
-        instagram_handle: "",
-        linkedin_url: "",
-        profile_completed: false
-      }]);
-      if (error) alert(error.message);
+      .chat-message {
+        max-width: 90%;
+      }
     }
-  }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nest ✨</h1>
+    <p>a place to build your chosen family</p>
+  </header>
 
-  async function loadProfile() {
-    if (!currentUser) {
-      currentProfile = null;
-      return;
-    }
+  <div class="container" id="app"></div>
 
-    const { data, error } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", currentUser.id)
-      .single();
+  <div class="tabs">
+    <button id="homeTab" class="active">Home</button>
+    <button id="createTab">Create</button>
+    <button id="profileTab">Profile</button>
+  </div>
 
-    if (error) return alert(error.message);
-    currentProfile = data;
-  }
+  <script>
+    const STORAGE_KEY = "nest_premium_v3";
+    let events = [];
 
-  function profileIsComplete(profile) {
-    return !!(
-      profile &&
-      profile.full_name &&
-      profile.instagram_handle &&
-      profile.linkedin_url &&
-      profile.profile_completed
-    );
-  }
-
-  async function saveProfile() {
-    const fullName = document.getElementById("fullName").value.trim();
-    const phoneNumber = document.getElementById("profilePhone").value.trim();
-    const instagram = document.getElementById("instagramHandle").value.trim();
-    const linkedin = document.getElementById("linkedinUrl").value.trim();
-
-    if (!fullName || !instagram || !linkedin) {
-      return alert("Please complete all required fields.");
-    }
-
-    const { error } = await supabaseClient
-      .from("profiles")
-      .update({
-        full_name: fullName,
-        phone_number: phoneNumber,
-        instagram_handle: instagram,
-        linkedin_url: linkedin,
-        profile_completed: true,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", currentUser.id);
-
-    if (error) return alert(error.message);
-
-    await loadProfile();
-    await loadAllData();
-    renderHome();
-  }
-
-  async function signOut() {
-    await supabaseClient.auth.signOut();
-    currentUser = null;
-    currentProfile = null;
-    events = [];
-    promptsByEvent = {};
-    answersByPrompt = {};
-    commentsByEvent = {};
-    chatByEvent = {};
-    joinRequestsByEvent = {};
-    renderLogin();
-  }
-
-  async function loadAllData() {
-    const { data: eventsData, error: eventsErr } = await supabaseClient
-      .from("events")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (eventsErr) {
+    try {
+      events = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
       events = [];
-      return;
     }
 
-    events = eventsData || [];
-    promptsByEvent = {};
-    answersByPrompt = {};
-    commentsByEvent = {};
-    chatByEvent = {};
-    joinRequestsByEvent = {};
-
-    const eventIds = events.map(e => e.id);
-    if (!eventIds.length) return;
-
-    const { data: promptsData } = await supabaseClient
-      .from("prompts")
-      .select("*")
-      .in("event_id", eventIds)
-      .order("sort_order", { ascending: true });
-
-    (promptsData || []).forEach(p => {
-      if (!promptsByEvent[p.event_id]) promptsByEvent[p.event_id] = [];
-      promptsByEvent[p.event_id].push(p);
-    });
-
-    const promptIds = (promptsData || []).map(p => p.id);
-
-    if (promptIds.length) {
-      const { data: answersData } = await supabaseClient
-        .from("prompt_answers")
-        .select("*")
-        .in("prompt_id", promptIds)
-        .order("created_at", { ascending: true });
-
-      (answersData || []).forEach(a => {
-        if (!answersByPrompt[a.prompt_id]) answersByPrompt[a.prompt_id] = [];
-        answersByPrompt[a.prompt_id].push(a);
-      });
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
     }
 
-    const { data: commentsData } = await supabaseClient
-      .from("comments")
-      .select("*")
-      .in("event_id", eventIds)
-      .order("created_at", { ascending: true });
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-    (commentsData || []).forEach(c => {
-      if (!commentsByEvent[c.event_id]) commentsByEvent[c.event_id] = [];
-      commentsByEvent[c.event_id].push(c);
-    });
+    function formatTime(dateString) {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "";
+      return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
 
-    const { data: chatData } = await supabaseClient
-      .from("chat_messages")
-      .select("*")
-      .in("event_id", eventIds)
-      .order("created_at", { ascending: true });
+    function defaultPromptQuestions() {
+      return [
+        "What movie should we watch?",
+        "What game should we play?",
+        "What music should we have in the background?",
+        "What would you love us to talk about?"
+      ];
+    }
 
-    (chatData || []).forEach(m => {
-      if (!chatByEvent[m.event_id]) chatByEvent[m.event_id] = [];
-      chatByEvent[m.event_id].push(m);
-    });
+    function setActiveTab(tab) {
+      document.getElementById("homeTab").classList.remove("active");
+      document.getElementById("createTab").classList.remove("active");
+      document.getElementById("profileTab").classList.remove("active");
+      if (tab === "home") document.getElementById("homeTab").classList.add("active");
+      if (tab === "create") document.getElementById("createTab").classList.add("active");
+      if (tab === "profile") document.getElementById("profileTab").classList.add("active");
+    }
 
-    const { data: requestsData } = await supabaseClient
-      .from("join_requests")
-      .select("*")
-      .in("event_id", eventIds)
-      .order("created_at", { ascending: true });
+    function renderHero() {
+      return `
+        <div class="hero-card fade-in">
+          <div class="hero-title">Create evenings people want to remember.</div>
+          <div class="hero-copy">Plan cozy gatherings, collect ideas, and make your people feel at home.</div>
+        </div>
+      `;
+    }
 
-    (requestsData || []).forEach(r => {
-      if (!joinRequestsByEvent[r.event_id]) joinRequestsByEvent[r.event_id] = [];
-      joinRequestsByEvent[r.event_id].push(r);
-    });
-  }
+    function parseDateForCard(dateText) {
+      if (!dateText) return { month: "Soon", day: "•", weekday: "" };
+      const parsed = new Date(dateText);
+      if (isNaN(parsed.getTime())) return { month: "Soon", day: "•", weekday: dateText };
+      return {
+        month: parsed.toLocaleString(undefined, { month: "short" }).toUpperCase(),
+        day: parsed.getDate(),
+        weekday: parsed.toLocaleString(undefined, { weekday: "short" })
+      };
+    }
 
-  function getTopPicks(eventId) {
-    const picks = [];
-    const prompts = promptsByEvent[eventId] || [];
+    function getApprovedGuests(event) {
+      return (event.joinRequests || []).filter(r => r.status === "approved");
+    }
 
-    prompts.forEach(prompt => {
-      (answersByPrompt[prompt.id] || []).forEach(answer => {
-        picks.push({
-          type: prompt.question,
-          name: answer.user_name,
-          text: answer.answer,
-          likes: answer.likes_count || 0,
-          mood: answer.mood || ""
+    function getInitials(name) {
+      const parts = String(name || "G").trim().split(/\s+/).slice(0, 2);
+      return parts.map(p => p[0]?.toUpperCase() || "").join("") || "G";
+    }
+
+    function renderAvatarRow(event) {
+      const approved = getApprovedGuests(event).slice(0, 4);
+      if (!approved.length) {
+        return `<div class="small-text" style="margin-top:12px;">No approved guests yet.</div>`;
+      }
+
+      return `
+        <div class="avatar-row">
+          <div class="avatar-stack">
+            ${approved.map(person => `<div class="avatar">${escapeHtml(getInitials(person.name))}</div>`).join("")}
+          </div>
+          <div class="small-text">${approved.length} guest${approved.length === 1 ? "" : "s"} joining</div>
+        </div>
+      `;
+    }
+
+    function getTopPicks(event) {
+      const picks = [];
+      (event.prompts || []).forEach(prompt => {
+        (prompt.answers || []).forEach(answer => {
+          picks.push({
+            type: prompt.question,
+            name: answer.name,
+            text: answer.text,
+            likes: answer.likes || 0,
+            mood: answer.mood || ""
+          });
         });
       });
-    });
 
-    (commentsByEvent[eventId] || []).forEach(comment => {
-      picks.push({
-        type: "Guest comment",
-        name: comment.user_name,
-        text: comment.comment,
-        likes: comment.likes_count || 0,
-        mood: comment.mood || ""
+      (event.comments || []).forEach(comment => {
+        picks.push({
+          type: "Guest comment",
+          name: comment.name,
+          text: comment.text,
+          likes: comment.likes || 0,
+          mood: comment.mood || ""
+        });
       });
-    });
 
-    return picks.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
-  }
-
-  function renderLogin() {
-    setActiveTab("home");
-    document.getElementById("app").innerHTML = `
-      <div class="card">
-        <div class="section-title" style="margin-top:0;">Join Nest</div>
-        <div class="section-note">Enter your email to receive a magic login link.</div>
-        <input id="emailInput" placeholder="you@example.com" />
-        <button onclick="sendMagicLink()">Send Magic Link</button>
-      </div>
-    `;
-  }
-
-  function renderCompleteProfile() {
-    setActiveTab("home");
-    document.getElementById("app").innerHTML = `
-      <div class="card">
-        <div class="section-title" style="margin-top:0;">Complete your profile</div>
-        <div class="section-note">These details are required before using Nest.</div>
-
-        <input id="fullName" placeholder="Full name" value="${escapeHtml(currentProfile?.full_name || "")}" />
-        <input id="profilePhone" placeholder="Phone number (optional for now)" value="${escapeHtml(currentProfile?.phone_number || "")}" />
-        <input id="instagramHandle" placeholder="Instagram handle" value="${escapeHtml(currentProfile?.instagram_handle || "")}" />
-        <input id="linkedinUrl" placeholder="LinkedIn profile URL" value="${escapeHtml(currentProfile?.linkedin_url || "")}" />
-
-        <button onclick="saveProfile()">Save Profile</button>
-      </div>
-    `;
-  }
-
-  function renderAuthCard() {
-    if (!currentUser || !currentProfile) {
-      return `
-        <div class="card">
-          <div class="section-title" style="margin-top:0;">Not signed in</div>
-          <div class="section-note">Sign in to create gatherings, chat, and join events.</div>
-          <button onclick="renderLogin()">Sign In</button>
-        </div>
-      `;
+      return picks.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
     }
 
-    return `
-      <div class="card">
-        <div class="section-title" style="margin-top:0;">Welcome, ${escapeHtml(currentProfile.full_name || "Guest")} ✨</div>
-        <div class="small-text">${escapeHtml(currentUser.email || "")}</div>
-        <div class="small-text">${escapeHtml(currentProfile.phone_number || "")}</div>
-        <div class="small-text">${escapeHtml(currentProfile.instagram_handle || "")}</div>
-        <div class="small-text">${escapeHtml(currentProfile.linkedin_url || "")}</div>
-        <button class="secondary-btn" onclick="signOut()">Sign Out</button>
-      </div>
-    `;
-  }
+    function renderHome() {
+      setActiveTab("home");
 
-  function renderHome() {
-    setActiveTab("home");
-
-    let html = renderAuthCard();
-    html += `
-      <div class="hero-card">
-        <div class="hero-title">Create evenings people want to remember.</div>
-        <div class="hero-copy">Gather ideas, shape the vibe, and plan intentional moments that feel warm, thoughtful, and easy.</div>
-      </div>
-
-      <div class="screen-title">Upcoming gatherings</div>
-      <div class="screen-subtitle">A clean overview of what’s coming up.</div>
-    `;
-
-    if (events.length === 0) {
-      html += `<div class="empty">No gatherings yet — create one ✨</div>`;
-      document.getElementById("app").innerHTML = html;
-      return;
-    }
-
-    events.forEach((event, eventIndex) => {
+      let html = renderHero();
       html += `
-        <div class="card">
-          <div class="event-title">${escapeHtml(event.title)}</div>
-          <div class="event-description">${escapeHtml(event.description || "A warm space to connect.")}</div>
+        <div class="screen-title fade-in">Upcoming gatherings</div>
+        <div class="screen-subtitle fade-in">Soft plans, warm energy, and thoughtful connection.</div>
+      `;
 
-          <div class="meta-row">
-            <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
-            ${event.event_mood ? `<div class="pill">☁️ ${escapeHtml(event.event_mood)}</div>` : ""}
-            ${event.event_date ? `<div class="pill">📅 ${escapeHtml(event.event_date)}</div>` : ""}
-            ${event.event_time ? `<div class="pill">🕒 ${escapeHtml(event.event_time)}</div>` : ""}
-            ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
+      if (!events.length) {
+        html += `<div class="empty fade-in">No gatherings yet — create one ✨</div>`;
+      } else {
+        events.forEach((event, index) => {
+          const dateCard = parseDateForCard(event.date);
+          html += `
+            <div class="card fade-in">
+              <div class="event-grid">
+                <div class="date-card">
+                  <div class="date-month">${escapeHtml(dateCard.month)}</div>
+                  <div class="date-day">${escapeHtml(dateCard.day)}</div>
+                  <div class="date-weekday">${escapeHtml(dateCard.weekday)}</div>
+                </div>
+
+                <div>
+                  <div class="event-title">${escapeHtml(event.title)}</div>
+                  <div class="event-description">${escapeHtml(event.description || "A warm space to connect.")}</div>
+
+                  <div class="meta-row">
+                    <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
+                    ${event.eventMood ? `<div class="pill">☁️ ${escapeHtml(event.eventMood)}</div>` : ""}
+                    ${event.time ? `<div class="pill">🕒 ${escapeHtml(event.time)}</div>` : ""}
+                    ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
+                  </div>
+
+                  ${renderAvatarRow(event)}
+
+                  <button onclick="openEvent(${index}, 'chat')">Open Gathering</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById("app").innerHTML = html;
+    }
+
+    function renderCreate() {
+      setActiveTab("create");
+
+      document.getElementById("app").innerHTML = `
+        <div class="screen-title fade-in">Create a gathering</div>
+        <div class="screen-subtitle fade-in">Shape the mood, add the details, and make it feel inviting.</div>
+
+        <div class="card fade-in">
+          <input id="title" placeholder="Ladies Evening ✨" />
+
+          <div class="form-grid">
+            <input id="vibe" placeholder="Cozy, meaningful, fun..." />
+            <select id="eventMood">
+              <option>Chill</option>
+              <option>Fun</option>
+              <option>Deep talk</option>
+              <option>Cozy</option>
+              <option>Party</option>
+            </select>
           </div>
 
-          <button onclick="openEvent(${eventIndex}, 'chat')">Open Gathering</button>
+          <div class="form-grid">
+            <input id="date" placeholder="2026-04-10 or April 10" />
+            <input id="time" placeholder="7:00 PM" />
+          </div>
+
+          <input id="location" placeholder="Chelsea / My apartment" />
+          <textarea id="desc" placeholder="What makes this gathering special?"></textarea>
+          <textarea id="hostNote" placeholder="Host note: what kind of evening are you imagining?"></textarea>
+
+          <div class="section-title">Default prompts</div>
+          <div class="section-note">These help guests contribute ideas before the evening begins.</div>
+          <div class="small-text">• What movie should we watch?</div>
+          <div class="small-text">• What game should we play?</div>
+          <div class="small-text">• What music should we have in the background?</div>
+          <div class="small-text">• What would you love us to talk about?</div>
+
+          <button onclick="createEvent()">Create Gathering</button>
         </div>
       `;
-    });
+    }
 
-    document.getElementById("app").innerHTML = html;
-  }
+    function renderProfile() {
+      setActiveTab("profile");
 
-  function renderCreate() {
-    setActiveTab("create");
-
-    if (!currentUser || !profileIsComplete(currentProfile)) {
       document.getElementById("app").innerHTML = `
-        ${renderAuthCard()}
-        <div class="empty">Sign in and complete your profile first to create a gathering ✨</div>
-      `;
-      return;
-    }
+        <div class="screen-title fade-in">Your space</div>
+        <div class="screen-subtitle fade-in">A quiet place to manage your gatherings and reset things when needed.</div>
 
-    document.getElementById("app").innerHTML = `
-      ${renderAuthCard()}
-      <div class="screen-title">Create a gathering</div>
-      <div class="screen-subtitle">Set the tone, shape the mood, and add the essentials beautifully.</div>
-
-      <div class="card">
-        <input id="title" placeholder="Game Evening ✨" />
-
-        <div class="form-grid">
-          <input id="vibe" placeholder="Cozy, meaningful, fun..." />
-          <select id="eventMood">
-            <option>Chill</option>
-            <option>Fun</option>
-            <option>Deep talk</option>
-            <option>Cozy</option>
-            <option>Party</option>
-          </select>
-        </div>
-
-        <div class="form-grid">
-          <input id="date" placeholder="Friday, April 5" />
-          <input id="time" placeholder="7:00 PM" />
-        </div>
-
-        <input id="location" placeholder="West Village / My apartment" />
-        <textarea id="desc" placeholder="What makes this gathering special?"></textarea>
-        <textarea id="hostNote" placeholder="Host note: what kind of evening are you imagining?"></textarea>
-
-        <div class="section-title">Default prompts</div>
-        <div class="section-note">These help guests contribute ideas before the evening begins.</div>
-        <div class="small-text">• What movie should we watch?</div>
-        <div class="small-text">• What game should we play?</div>
-        <div class="small-text">• What music should we have in the background?</div>
-        <div class="small-text">• What would you love us to talk about?</div>
-
-        <button onclick="createEvent()">Create Gathering</button>
-      </div>
-    `;
-  }
-
-  function renderProfile() {
-    setActiveTab("profile");
-
-    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-    let html = renderAuthCard();
-
-    html += `
-      <div class="screen-title">Your space</div>
-      <div class="screen-subtitle">A quiet place to manage your gatherings and reset things when needed.</div>
-    `;
-
-    if (isAdmin) {
-      html += `
-        <div class="card">
+        <div class="card fade-in">
           <div style="font-size:18px; font-weight:700;">${events.length} gathering${events.length === 1 ? "" : "s"} created so far ✨</div>
-          <div class="section-note">Admin tools are enabled for your account.</div>
-          <button id="resetBtn" class="danger-btn">Delete All Gatherings</button>
-        </div>
-      `;
-    }
-
-    html += `
-      <div class="card">
-        <div class="section-title" style="margin-top:0;">Manage gatherings</div>
-        ${
-          events.length === 0
-            ? `<div class="small-text">No gatherings to manage yet.</div>`
-            : events.map((event) => `
-                <div class="prompt-box">
-                  <div class="prompt-question">${escapeHtml(event.title)}</div>
-                  <div class="small-text">${escapeHtml(event.description || "")}</div>
-                  ${(currentUser && (currentUser.email === event.host_email || isAdmin))
-                    ? `<button class="danger-btn" onclick="deleteEvent('${event.id}')">Delete This Gathering</button>`
-                    : `<div class="small-text">Only the host can delete this gathering.</div>`
-                  }
-                </div>
-              `).join("")
-        }
-      </div>
-    `;
-
-    document.getElementById("app").innerHTML = html;
-
-    if (isAdmin) {
-      const btn = document.getElementById("resetBtn");
-      if (btn) btn.addEventListener("click", deleteAllEvents);
-    }
-  }
-
-  function openEvent(eventIndex, subtab = "chat") {
-    const event = events[eventIndex];
-    if (!event) return renderHome();
-
-    const isHost = currentUser && currentUser.email === event.host_email;
-    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-    const topPicks = getTopPicks(event.id);
-    const prompts = promptsByEvent[event.id] || [];
-    const comments = commentsByEvent[event.id] || [];
-    const chat = chatByEvent[event.id] || [];
-    const requests = joinRequestsByEvent[event.id] || [];
-
-    let html = renderAuthCard();
-
-    html += `
-      <div class="card">
-        <button class="secondary-btn" onclick="renderHome()">← Back to Home</button>
-
-        <div class="section-title" style="margin-top:16px; font-size:20px;">${escapeHtml(event.title)}</div>
-        <div class="event-description">${escapeHtml(event.description || "A warm space to connect.")}</div>
-
-        <div class="meta-row">
-          <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
-          ${event.event_mood ? `<div class="pill">☁️ ${escapeHtml(event.event_mood)}</div>` : ""}
-          ${event.event_date ? `<div class="pill">📅 ${escapeHtml(event.event_date)}</div>` : ""}
-          ${event.event_time ? `<div class="pill">🕒 ${escapeHtml(event.event_time)}</div>` : ""}
-          ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
+          <div class="section-note">Everything is stored locally on this device for now.</div>
+          <button class="danger-btn" onclick="resetAllEvents()">Delete All Gatherings</button>
         </div>
 
-        ${event.host_note ? `
-          <div class="section-title">From the host</div>
-          <div class="host-note">${escapeHtml(event.host_note)}</div>
-        ` : ""}
-
-        <div class="subtabs">
-          <button class="${subtab === 'chat' ? 'active' : ''}" onclick="openEvent(${eventIndex}, 'chat')">Chat</button>
-          <button class="${subtab === 'ideas' ? 'active' : ''}" onclick="openEvent(${eventIndex}, 'ideas')">Ideas</button>
-          <button class="${subtab === 'people' ? 'active' : ''}" onclick="openEvent(${eventIndex}, 'people')">People</button>
-        </div>
-    `;
-
-    if (subtab === "chat") {
-      html += `
-        <div class="section-title">Event chat</div>
-        <div class="small-text">A soft space for the group conversation.</div>
-
-        <div class="chat-wrap">
+        <div class="card fade-in">
+          <div class="section-title" style="margin-top:0;">Manage gatherings</div>
           ${
-            chat.length === 0
-              ? `<div class="small-text">No messages yet — start the conversation ✨</div>`
-              : chat.map(msg => `
-                  <div class="chat-message ${msg.is_self ? "self" : "other"}">
-                    ${!msg.is_self ? `<div class="chat-name">${escapeHtml(msg.user_name)}</div>` : ""}
-                    <div>${escapeHtml(msg.message)}</div>
-                    <div class="chat-time">${escapeHtml(formatTime(msg.created_at))}</div>
+            !events.length
+              ? `<div class="small-text">No gatherings to manage yet.</div>`
+              : events.map((event, index) => `
+                  <div class="prompt-box">
+                    <div class="prompt-question">${escapeHtml(event.title)}</div>
+                    <div class="small-text">${escapeHtml(event.description || "")}</div>
+                    <button class="danger-btn" onclick="deleteEvent(${index})">Delete This Gathering</button>
                   </div>
                 `).join("")
           }
         </div>
-
-        ${currentUser ? `
-          <input id="chatName" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
-          <textarea id="chatMessage" placeholder="Type a message..."></textarea>
-          <div class="row">
-            <button class="secondary-btn" onclick="sendMessage('${event.id}', false, ${eventIndex})">Send as Guest</button>
-            <button onclick="sendMessage('${event.id}', true, ${eventIndex})">Send as You</button>
-          </div>
-        ` : `<div class="small-text">Sign in to chat.</div>`}
       `;
     }
 
-    if (subtab === "ideas") {
-      html += `
-        <div class="section-title">Top picks</div>
-        ${
-          topPicks.length === 0
-            ? `<div class="small-text">No suggestions yet — be the first ✨</div>`
-            : topPicks.map(item => `
-                <div class="top-pick-item">
-                  <div class="top-pick-title">${escapeHtml(item.text)}</div>
-                  <div class="top-pick-meta">
-                    ${escapeHtml(item.name)} • ${escapeHtml(item.type)}${item.mood ? ` • ${escapeHtml(item.mood)}` : ""} • ❤️ ${item.likes}
-                  </div>
-                </div>
-              `).join("")
-        }
+    function openEvent(index, subtab = "chat") {
+      const event = events[index];
+      if (!event) return renderHome();
 
-        <div class="section-title">Prompts for the evening</div>
+      setActiveTab("home");
+      const topPicks = getTopPicks(event);
+
+      let html = `
+        <div class="card fade-in">
+          <button class="secondary-btn" onclick="renderHome()">← Back to Home</button>
+
+          <div class="section-title" style="margin-top:16px; font-size:20px;">${escapeHtml(event.title)}</div>
+          <div class="event-description">${escapeHtml(event.description || "A warm space to connect.")}</div>
+
+          <div class="meta-row">
+            <div class="pill">✨ ${escapeHtml(event.vibe || "Meaningful")}</div>
+            ${event.eventMood ? `<div class="pill">☁️ ${escapeHtml(event.eventMood)}</div>` : ""}
+            ${event.date ? `<div class="pill">📅 ${escapeHtml(event.date)}</div>` : ""}
+            ${event.time ? `<div class="pill">🕒 ${escapeHtml(event.time)}</div>` : ""}
+            ${event.location ? `<div class="pill">📍 ${escapeHtml(event.location)}</div>` : ""}
+          </div>
+
+          ${renderAvatarRow(event)}
+
+          ${event.hostNote ? `
+            <div class="section-title">From the host</div>
+            <div class="host-note">${escapeHtml(event.hostNote)}</div>
+          ` : ""}
+
+          <div class="subtabs">
+            <button class="${subtab === 'chat' ? 'active' : ''}" onclick="openEvent(${index}, 'chat')">Chat</button>
+            <button class="${subtab === 'ideas' ? 'active' : ''}" onclick="openEvent(${index}, 'ideas')">Ideas</button>
+            <button class="${subtab === 'people' ? 'active' : ''}" onclick="openEvent(${index}, 'people')">People</button>
+          </div>
       `;
 
-      prompts.forEach((prompt, promptIndex) => {
-        const answers = answersByPrompt[prompt.id] || [];
+      if (subtab === "chat") {
         html += `
-          <div class="prompt-box">
-            <div class="prompt-question">${escapeHtml(prompt.question)}</div>
+          <div class="section-title">Event chat</div>
+          <div class="small-text">A soft space for the group conversation.</div>
 
-            ${answers.map(answer => `
-              <div class="answer-item">
-                <div class="item-line"><strong>${escapeHtml(answer.user_name)}</strong>: ${escapeHtml(answer.answer)}</div>
-                <div class="row">
-                  ${answer.mood ? `<span class="pill">${escapeHtml(answer.mood)}</span>` : ""}
-                  <button class="like-btn" onclick="likeAnswer('${answer.id}', ${eventIndex})">❤️ ${answer.likes_count || 0}</button>
+          <div class="chat-wrap">
+            ${
+              !event.chatMessages?.length
+                ? `<div class="small-text">No messages yet — start the conversation ✨</div>`
+                : event.chatMessages.map(msg => `
+                    <div class="chat-message ${msg.isSelf ? "self" : "other"}">
+                      ${!msg.isSelf ? `<div class="chat-name">${escapeHtml(msg.name)}</div>` : ""}
+                      <div>${escapeHtml(msg.text)}</div>
+                      <div class="chat-time">${escapeHtml(formatTime(msg.createdAt))}</div>
+                    </div>
+                  `).join("")
+            }
+          </div>
+
+          <input id="chatName" placeholder="Your name" />
+          <textarea id="chatMessage" placeholder="Type a message..."></textarea>
+          <div class="row">
+            <button class="secondary-btn" onclick="sendMessage(${index}, false)">Send as Guest</button>
+            <button onclick="sendMessage(${index}, true)">Send as You</button>
+          </div>
+        `;
+      }
+
+      if (subtab === "ideas") {
+        html += `
+          <div class="section-title">Top picks</div>
+          ${
+            !topPicks.length
+              ? `<div class="small-text">No suggestions yet — be the first ✨</div>`
+              : topPicks.map(item => `
+                  <div class="top-pick-item">
+                    <div class="top-pick-title">${escapeHtml(item.text)}</div>
+                    <div class="top-pick-meta">
+                      ${escapeHtml(item.name)} • ${escapeHtml(item.type)}${item.mood ? ` • ${escapeHtml(item.mood)}` : ""} • ❤️ ${item.likes}
+                    </div>
+                  </div>
+                `).join("")
+          }
+
+          <div class="section-title">Prompts for the evening</div>
+        `;
+
+        (event.prompts || []).forEach((prompt, promptIndex) => {
+          html += `
+            <div class="prompt-box">
+              <div class="prompt-question">${escapeHtml(prompt.question)}</div>
+
+              ${(prompt.answers || []).map((answer, answerIndex) => `
+                <div class="suggestion-item">
+                  <div class="item-line"><strong>${escapeHtml(answer.name)}</strong>: ${escapeHtml(answer.text)}</div>
+                  <div class="row">
+                    ${answer.mood ? `<span class="pill">${escapeHtml(answer.mood)}</span>` : ""}
+                    <button class="like-btn" onclick="likeAnswer(${index}, ${promptIndex}, ${answerIndex})">❤️ ${answer.likes || 0}</button>
+                  </div>
                 </div>
-              </div>
-            `).join("")}
+              `).join("")}
 
-            ${currentUser ? `
-              <input id="answerName-${promptIndex}" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+              <input id="answerName-${promptIndex}" placeholder="Your name" />
               <select id="answerMood-${promptIndex}">
                 <option>Chill</option>
                 <option>Fun</option>
@@ -580,27 +910,25 @@
                 <option>Party</option>
               </select>
               <input id="answerText-${promptIndex}" placeholder="Add your idea..." />
-              <button class="secondary-btn" onclick="addAnswer('${prompt.id}', ${promptIndex}, ${eventIndex})">Add Answer</button>
-            ` : `<div class="small-text">Sign in to add ideas.</div>`}
-          </div>
-        `;
-      });
-
-      html += `
-        <div class="section-title">Add your own question or comment</div>
-
-        ${comments.map(comment => `
-          <div class="comment-item">
-            <div class="item-line"><strong>${escapeHtml(comment.user_name)}</strong>: ${escapeHtml(comment.comment)}</div>
-            <div class="row">
-              ${comment.mood ? `<span class="pill">${escapeHtml(comment.mood)}</span>` : ""}
-              <button class="like-btn" onclick="likeComment('${comment.id}', ${eventIndex})">❤️ ${comment.likes_count || 0}</button>
+              <button class="secondary-btn" onclick="addAnswer(${index}, ${promptIndex})">Add Answer</button>
             </div>
-          </div>
-        `).join("")}
+          `;
+        });
 
-        ${currentUser ? `
-          <input id="commentName" placeholder="Your name" value="${escapeHtml(currentProfile?.full_name || "")}" />
+        html += `
+          <div class="section-title">Add your own question or comment</div>
+
+          ${(event.comments || []).map((comment, commentIndex) => `
+            <div class="suggestion-item">
+              <div class="item-line"><strong>${escapeHtml(comment.name)}</strong>: ${escapeHtml(comment.text)}</div>
+              <div class="row">
+                ${comment.mood ? `<span class="pill">${escapeHtml(comment.mood)}</span>` : ""}
+                <button class="like-btn" onclick="likeComment(${index}, ${commentIndex})">❤️ ${comment.likes || 0}</button>
+              </div>
+            </div>
+          `).join("")}
+
+          <input id="commentName" placeholder="Your name" />
           <select id="commentMood">
             <option>Chill</option>
             <option>Fun</option>
@@ -609,333 +937,247 @@
             <option>Party</option>
           </select>
           <textarea id="commentText" placeholder="Share a thought, suggestion, or question..."></textarea>
-          <button class="secondary-btn" onclick="addComment('${event.id}', ${eventIndex})">Add Comment</button>
-        ` : `<div class="small-text">Sign in to add comments.</div>`}
-      `;
-    }
+          <button class="secondary-btn" onclick="addComment(${index})">Add Comment</button>
+        `;
+      }
 
-    if (subtab === "people") {
-      html += `
-        <div class="section-title">People</div>
-        <div class="small-text">Join requests and attendee list for this gathering.</div>
+      if (subtab === "people") {
+        html += `
+          <div class="section-title">People</div>
+          <div class="small-text">Join requests and attendee list for this gathering.</div>
 
-        <div class="people-item">
-          <div class="prompt-question">Join requests</div>
-          ${
-            requests.length === 0
-              ? `<div class="small-text">No join requests yet.</div>`
-              : requests.map(req => `
-                  <div class="answer-item">
-                    <div class="item-line"><strong>${escapeHtml(req.guest_name)}</strong></div>
-                    <div class="small-text">Status: ${escapeHtml(req.status)}</div>
-                    ${(isHost || isAdmin) ? `
+          <div class="people-item">
+            <div class="prompt-question">Join requests</div>
+            ${
+              !event.joinRequests?.length
+                ? `<div class="small-text">No join requests yet.</div>`
+                : event.joinRequests.map((req, reqIndex) => `
+                    <div class="suggestion-item">
+                      <div class="item-line"><strong>${escapeHtml(req.name)}</strong></div>
+                      <div class="small-text">Status: ${escapeHtml(req.status)}</div>
                       <div class="row">
-                        <button class="secondary-btn tiny-btn" onclick="updateJoinRequest('${req.id}', 'approved', ${eventIndex})">Approve</button>
-                        <button class="tiny-btn danger-btn" onclick="updateJoinRequest('${req.id}', 'declined', ${eventIndex})">Decline</button>
+                        <button class="secondary-btn tiny-btn" onclick="updateJoinRequest(${index}, ${reqIndex}, 'approved')">Approve</button>
+                        <button class="tiny-btn danger-btn" onclick="updateJoinRequest(${index}, ${reqIndex}, 'declined')">Decline</button>
                       </div>
-                    ` : ""}
-                  </div>
-                `).join("")
-          }
+                    </div>
+                  `).join("")
+            }
 
-          ${currentUser ? `
-            <input id="joinName" placeholder="Your name to request joining" value="${escapeHtml(currentProfile?.full_name || "")}" />
-            <button onclick="join('${event.id}', ${eventIndex})">Request to Join</button>
-          ` : `<div class="small-text">Sign in to request joining.</div>`}
-        </div>
+            <input id="joinName" placeholder="Your name to request joining" />
+            <button onclick="joinEvent(${index})">Request to Join</button>
+          </div>
 
-        <div class="people-item">
-          <div class="prompt-question">Approved guests</div>
-          ${
-            requests.filter(r => r.status === "approved").length === 0
-              ? `<div class="small-text">No approved guests yet.</div>`
-              : requests
-                  .filter(r => r.status === "approved")
-                  .map(r => `<div class="answer-item"><div class="item-line"><strong>${escapeHtml(r.guest_name)}</strong></div></div>`)
-                  .join("")
-          }
+          <div class="people-item">
+            <div class="prompt-question">Approved guests</div>
+            ${
+              !getApprovedGuests(event).length
+                ? `<div class="small-text">No approved guests yet.</div>`
+                : getApprovedGuests(event)
+                    .map(person => `
+                      <div class="suggestion-item">
+                        <div class="item-line"><strong>${escapeHtml(person.name)}</strong></div>
+                      </div>
+                    `).join("")
+            }
+          </div>
+        `;
+      }
+
+      html += `
+          <div class="divider"></div>
+          <button class="secondary-btn" onclick="copySummary(${index})">Copy Event Summary</button>
         </div>
       `;
+
+      document.getElementById("app").innerHTML = html;
     }
 
-    html += `
-        <div class="divider"></div>
-        <button class="secondary-btn" onclick="copySummary(${eventIndex})">Copy Event Summary</button>
-      </div>
-    `;
+    function createEvent() {
+      const title = document.getElementById("title").value.trim();
+      const vibe = document.getElementById("vibe").value.trim();
+      const eventMood = document.getElementById("eventMood").value;
+      const date = document.getElementById("date").value.trim();
+      const time = document.getElementById("time").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const description = document.getElementById("desc").value.trim();
+      const hostNote = document.getElementById("hostNote").value.trim();
 
-    document.getElementById("app").innerHTML = html;
-  }
-
-  async function createEvent() {
-    const title = document.getElementById("title").value.trim();
-    const vibe = document.getElementById("vibe").value.trim();
-    const description = document.getElementById("desc").value.trim();
-    const hostNote = document.getElementById("hostNote").value.trim();
-    const eventMood = document.getElementById("eventMood").value;
-    const eventDate = document.getElementById("date").value.trim();
-    const eventTime = document.getElementById("time").value.trim();
-    const location = document.getElementById("location").value.trim();
-
-    if (!title) return alert("Please add a gathering name ✨");
-
-    const { data: inserted, error } = await supabaseClient
-      .from("events")
-      .insert([{
-        title,
-        vibe: vibe || "Meaningful",
-        event_mood: eventMood || "Chill",
-        event_date: eventDate,
-        event_time: eventTime,
-        location,
-        description: description || "A warm space to connect.",
-        host_note: hostNote || "",
-        host_email: currentUser.email
-      }])
-      .select()
-      .single();
-
-    if (error) return alert(error.message);
-
-    const prompts = defaultPromptQuestions().map((q, i) => ({
-      event_id: inserted.id,
-      question: q,
-      sort_order: i
-    }));
-
-    const { error: promptError } = await supabaseClient.from("prompts").insert(prompts);
-    if (promptError) return alert(promptError.message);
-
-    await loadAllData();
-    alert("Gathering created ✨");
-    renderHome();
-  }
-
-  async function addAnswer(promptId, promptIndex, eventIndex) {
-    const name = document.getElementById(`answerName-${promptIndex}`).value.trim() || currentProfile?.full_name || "Guest";
-    const mood = document.getElementById(`answerMood-${promptIndex}`).value;
-    const text = document.getElementById(`answerText-${promptIndex}`).value.trim();
-    if (!text) return;
-
-    const { error } = await supabaseClient.from("prompt_answers").insert([{
-      prompt_id: promptId,
-      user_name: name,
-      user_email: currentUser.email,
-      mood,
-      answer: text
-    }]);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "ideas");
-  }
-
-  async function addComment(eventId, eventIndex) {
-    const name = document.getElementById("commentName").value.trim() || currentProfile?.full_name || "Guest";
-    const mood = document.getElementById("commentMood").value;
-    const text = document.getElementById("commentText").value.trim();
-    if (!text) return;
-
-    const { error } = await supabaseClient.from("comments").insert([{
-      event_id: eventId,
-      user_name: name,
-      user_email: currentUser.email,
-      mood,
-      comment: text
-    }]);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "ideas");
-  }
-
-  async function likeAnswer(answerId, eventIndex) {
-    const target = Object.values(answersByPrompt).flat().find(a => a.id === answerId);
-    if (!target) return;
-
-    const { error } = await supabaseClient
-      .from("prompt_answers")
-      .update({ likes_count: (target.likes_count || 0) + 1 })
-      .eq("id", answerId);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "ideas");
-  }
-
-  async function likeComment(commentId, eventIndex) {
-    const target = Object.values(commentsByEvent).flat().find(c => c.id === commentId);
-    if (!target) return;
-
-    const { error } = await supabaseClient
-      .from("comments")
-      .update({ likes_count: (target.likes_count || 0) + 1 })
-      .eq("id", commentId);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "ideas");
-  }
-
-  async function sendMessage(eventId, isSelf, eventIndex) {
-    const text = document.getElementById("chatMessage").value.trim();
-    const name = document.getElementById("chatName").value.trim() || currentProfile?.full_name || (isSelf ? "You" : "Guest");
-    if (!text) return;
-
-    const { error } = await supabaseClient.from("chat_messages").insert([{
-      event_id: eventId,
-      user_name: name,
-      user_email: currentUser.email,
-      is_self: !!isSelf,
-      message: text
-    }]);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "chat");
-  }
-
-  async function join(eventId, eventIndex) {
-    const name = document.getElementById("joinName").value.trim() || currentProfile?.full_name;
-    if (!name) return alert("Please add your name first ✨");
-
-    const { error } = await supabaseClient.from("join_requests").insert([{
-      event_id: eventId,
-      guest_name: name,
-      guest_email: currentUser.email
-    }]);
-
-    if (error) return alert(error.message);
-
-    alert("Request sent 💛");
-    await loadAllData();
-    openEvent(eventIndex, "people");
-  }
-
-  async function updateJoinRequest(requestId, status, eventIndex) {
-    const { error } = await supabaseClient
-      .from("join_requests")
-      .update({ status })
-      .eq("id", requestId);
-
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    openEvent(eventIndex, "people");
-  }
-
-  async function deleteEvent(eventId) {
-    const confirmed = confirm("Delete this gathering?");
-    if (!confirmed) return;
-
-    const { error } = await supabaseClient.from("events").delete().eq("id", eventId);
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    renderProfile();
-  }
-
-  async function deleteAllEvents() {
-    const confirmed = confirm("Delete all gatherings?");
-    if (!confirmed) return;
-
-    const ids = events.map(e => e.id);
-    if (!ids.length) return;
-
-    const { error } = await supabaseClient.from("events").delete().in("id", ids);
-    if (error) return alert(error.message);
-
-    await loadAllData();
-    renderHome();
-  }
-
-  function copySummary(eventIndex) {
-    const event = events[eventIndex];
-    if (!event) return;
-
-    const topPicks = getTopPicks(event.id);
-    const chat = chatByEvent[event.id] || [];
-
-    let summary = `${event.title}\n`;
-    summary += `${event.description || ""}\n`;
-    if (event.event_date) summary += `Date: ${event.event_date}\n`;
-    if (event.event_time) summary += `Time: ${event.event_time}\n`;
-    if (event.location) summary += `Location: ${event.location}\n`;
-    summary += `Vibe: ${event.vibe || "Meaningful"}\n`;
-    summary += `Mood: ${event.event_mood || "Chill"}\n\n`;
-
-    if (event.host_note) summary += `Host note:\n${event.host_note}\n\n`;
-
-    summary += `Top picks:\n`;
-    if (topPicks.length === 0) {
-      summary += `- No suggestions yet\n`;
-    } else {
-      topPicks.forEach(item => {
-        summary += `- ${item.text} (${item.name}, ${item.type}, ❤️ ${item.likes})\n`;
-      });
-    }
-
-    summary += `\nChat messages:\n`;
-    if (!chat.length) {
-      summary += `- No messages yet\n`;
-    } else {
-      chat.forEach(msg => {
-        summary += `- ${msg.user_name}: ${msg.message}\n`;
-      });
-    }
-
-    navigator.clipboard.writeText(summary)
-      .then(() => alert("Summary copied ✨"))
-      .catch(() => alert("Copy didn’t work automatically."));
-  }
-
-  function routeAfterAuth() {
-    if (!profileIsComplete(currentProfile)) {
-      renderCompleteProfile();
-    } else {
-      renderHome();
-    }
-  }
-
-  async function bootstrap() {
-    const { data } = await supabaseClient.auth.getSession();
-    currentUser = data.session?.user || null;
-
-    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-      currentUser = session?.user || null;
-      if (!currentUser) {
-        currentProfile = null;
-        renderLogin();
+      if (!title) {
+        alert("Please add a gathering name ✨");
         return;
       }
 
-      await ensureProfileRow();
-      await loadProfile();
-      await loadAllData();
-      routeAfterAuth();
-    });
+      const event = {
+        title,
+        vibe: vibe || "Meaningful",
+        eventMood: eventMood || "Chill",
+        date,
+        time,
+        location,
+        description: description || "A warm space to connect.",
+        hostNote: hostNote || "",
+        prompts: defaultPromptQuestions().map(question => ({
+          question,
+          answers: []
+        })),
+        comments: [],
+        chatMessages: [],
+        joinRequests: []
+      };
 
-    if (!currentUser) {
-      renderLogin();
-      return;
+      events.unshift(event);
+      save();
+      alert("Gathering created ✨");
+      renderHome();
     }
 
-    await ensureProfileRow();
-    await loadProfile();
-    await loadAllData();
-    routeAfterAuth();
-  }
+    function addAnswer(eventIndex, promptIndex) {
+      const name = document.getElementById(`answerName-${promptIndex}`).value.trim() || "Guest";
+      const mood = document.getElementById(`answerMood-${promptIndex}`).value;
+      const text = document.getElementById(`answerText-${promptIndex}`).value.trim();
+      if (!text) return;
 
-  document.getElementById("homeTab").addEventListener("click", renderHome);
-  document.getElementById("createTab").addEventListener("click", renderCreate);
-  document.getElementById("profileTab").addEventListener("click", renderProfile);
+      events[eventIndex].prompts[promptIndex].answers.push({
+        name,
+        mood,
+        text,
+        likes: 0
+      });
 
-  bootstrap();
+      save();
+      openEvent(eventIndex, "ideas");
+    }
+
+    function addComment(eventIndex) {
+      const name = document.getElementById("commentName").value.trim() || "Guest";
+      const mood = document.getElementById("commentMood").value;
+      const text = document.getElementById("commentText").value.trim();
+      if (!text) return;
+
+      events[eventIndex].comments.push({
+        name,
+        mood,
+        text,
+        likes: 0
+      });
+
+      save();
+      openEvent(eventIndex, "ideas");
+    }
+
+    function likeAnswer(eventIndex, promptIndex, answerIndex) {
+      events[eventIndex].prompts[promptIndex].answers[answerIndex].likes += 1;
+      save();
+      openEvent(eventIndex, "ideas");
+    }
+
+    function likeComment(eventIndex, commentIndex) {
+      events[eventIndex].comments[commentIndex].likes += 1;
+      save();
+      openEvent(eventIndex, "ideas");
+    }
+
+    function sendMessage(eventIndex, isSelf) {
+      const name = document.getElementById("chatName").value.trim() || (isSelf ? "You" : "Guest");
+      const text = document.getElementById("chatMessage").value.trim();
+      if (!text) return;
+
+      events[eventIndex].chatMessages.push({
+        name,
+        text,
+        isSelf,
+        createdAt: new Date().toISOString()
+      });
+
+      save();
+      openEvent(eventIndex, "chat");
+    }
+
+    function joinEvent(eventIndex) {
+      const name = document.getElementById("joinName").value.trim();
+      if (!name) {
+        alert("Please add your name first ✨");
+        return;
+      }
+
+      events[eventIndex].joinRequests.push({
+        name,
+        status: "pending"
+      });
+
+      save();
+      alert("Request sent 💛");
+      openEvent(eventIndex, "people");
+    }
+
+    function updateJoinRequest(eventIndex, requestIndex, status) {
+      events[eventIndex].joinRequests[requestIndex].status = status;
+      save();
+      openEvent(eventIndex, "people");
+    }
+
+    function deleteEvent(index) {
+      const confirmed = confirm("Delete this gathering?");
+      if (!confirmed) return;
+      events.splice(index, 1);
+      save();
+      renderProfile();
+    }
+
+    function resetAllEvents() {
+      const confirmed = confirm("Delete all gatherings?");
+      if (!confirmed) return;
+      events = [];
+      save();
+      renderHome();
+    }
+
+    function copySummary(eventIndex) {
+      const event = events[eventIndex];
+      if (!event) return;
+
+      const topPicks = getTopPicks(event);
+
+      let summary = `${event.title}\n`;
+      summary += `${event.description || ""}\n`;
+      if (event.date) summary += `Date: ${event.date}\n`;
+      if (event.time) summary += `Time: ${event.time}\n`;
+      if (event.location) summary += `Location: ${event.location}\n`;
+      summary += `Vibe: ${event.vibe || "Meaningful"}\n`;
+      summary += `Mood: ${event.eventMood || "Chill"}\n\n`;
+
+      if (event.hostNote) {
+        summary += `Host note:\n${event.hostNote}\n\n`;
+      }
+
+      summary += `Top picks:\n`;
+      if (!topPicks.length) {
+        summary += `- No suggestions yet\n`;
+      } else {
+        topPicks.forEach(item => {
+          summary += `- ${item.text} (${item.name}, ${item.type}, ❤️ ${item.likes})\n`;
+        });
+      }
+
+      summary += `\nChat messages:\n`;
+      if (!event.chatMessages.length) {
+        summary += `- No messages yet\n`;
+      } else {
+        event.chatMessages.forEach(msg => {
+          summary += `- ${msg.name}: ${msg.text}\n`;
+        });
+      }
+
+      navigator.clipboard.writeText(summary)
+        .then(() => alert("Summary copied ✨"))
+        .catch(() => alert("Copy didn’t work automatically."));
+    }
+
+    document.getElementById("homeTab").addEventListener("click", renderHome);
+    document.getElementById("createTab").addEventListener("click", renderCreate);
+    document.getElementById("profileTab").addEventListener("click", renderProfile);
+
+    renderHome();
   </script>
 </body>
 </html>
